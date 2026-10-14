@@ -1,7 +1,7 @@
 {
   "_status": "DRAFT. Bands are frozen in M3 from real distributions (target: each value 1-10 held by >= 3% of Chogs where possible).",
   "loyaltyDaysPerPoint": 6,
-  "journeyOwnersToScore": [1, 2, 3, 4, 5, 6, 7, 8],
+  "journeyOwnersToScore": [1, 2, 3, 5, 6, 7, 9, 10],
   "fameSalesToScore": [1, 3, 4, 6, 8, 9, 10],
   "valueRatioBands": [
     { "maxRatio": 0.6, "score": 1 },
