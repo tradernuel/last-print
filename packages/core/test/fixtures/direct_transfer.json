@@ -1,0 +1,31 @@
+{
+  "name": "direct_transfer",
+  "expect": "TRANSFER",
+  "fetchedAt": "2026-10-14T14:22:28.526Z",
+  "rpc": "https://rpc.monad.xyz",
+  "tx": {
+    "hash": "0xe3fa036d75423405a28f8f79664906e1623840f7d4507ddd5f2991be88717824",
+    "from": "0x7199c74e7b7bbe1ee6e0ee5132867fe2e68607e5",
+    "to": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
+    "input": "0x42842e0e",
+    "blockNumber": "110068765",
+    "transactionIndex": 18
+  },
+  "block": {
+    "number": "110068765",
+    "timestamp": "1790996853"
+  },
+  "logs": [
+    {
+      "address": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
+      "topics": [
+        "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+        "0x0000000000000000000000007199c74e7b7bbe1ee6e0ee5132867fe2e68607e5",
+        "0x00000000000000000000000072e3d4ef273e5a6bd3bd091ebb95f704c6742ae3",
+        "0x000000000000000000000000000000000000000000000000000000000000017e"
+      ],
+      "data": "0x",
+      "logIndex": 142
+    }
+  ]
+}
