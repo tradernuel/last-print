@@ -1,0 +1,15 @@
+{
+  "name": "last-print",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "tsc -p packages/core/tsconfig.json --noEmit",
+    "test:contracts": "cd contracts && forge test -vv",
+    "fixtures:fetch": "node --experimental-strip-types scripts/fetch-fixtures.ts",
+    "verify:pack": "node --experimental-strip-types scripts/verify-pack.ts"
+  },
+  "engines": { "node": ">=22" }
+}

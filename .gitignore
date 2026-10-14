@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+coverage/
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+data/raw/
+data/mirror/
+*.log
+# private build spec must never be committed
+SPEC*.md
+spec*.md
