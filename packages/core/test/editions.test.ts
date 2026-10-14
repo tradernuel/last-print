@@ -46,10 +46,16 @@ describe("editions and Last Prints", () => {
     expect(c.lastPrint!.pull.playerId).toBe(P1);
   });
 
-  it("a root in the same block but an earlier tx counts", () => {
+  it("a root in the same block as the sale does not count, even at an earlier tx index", () => {
     const { book, pull, post } = setup();
     pull(7n, P2, T0); post(1200n, 1);
-    expect(book.applySale(sale(7n, 1200n, 2, T0 + 1n)).outcome).toBe("CROWNED");
+    expect(book.applySale(sale(7n, 1200n, 2, T0 + 1n)).outcome).toBe("UNCLAIMED");
+  });
+
+  it("a root one block before the sale counts", () => {
+    const { book, pull, post } = setup();
+    pull(7n, P2, T0); post(1199n, 9);
+    expect(book.applySale(sale(7n, 1200n, 0, T0 + 1n)).outcome).toBe("CROWNED");
   });
 
   it("an unrooted pull cannot win", () => {

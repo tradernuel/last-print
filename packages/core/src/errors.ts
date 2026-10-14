@@ -17,9 +17,13 @@ export const ErrorCode = {
 export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 export class LastPrintError extends Error {
-  constructor(public readonly code: ErrorCode, message: string, public readonly detail?: unknown) {
+  readonly code: ErrorCode;
+  readonly detail?: unknown;
+  constructor(code: ErrorCode, message: string, detail?: unknown) {
     super(`${code}: ${message}`);
     this.name = "LastPrintError";
+    this.code = code;
+    this.detail = detail;
   }
 }
 

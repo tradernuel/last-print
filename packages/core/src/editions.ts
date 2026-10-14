@@ -42,7 +42,8 @@ export class EditionBook {
   private roots = new Map<Hex, PostedRoot>();
   private closes: EditionClose[] = [];
 
-  constructor(private readonly launch: ChainPos) {}
+  private readonly launch: ChainPos;
+  constructor(launch: ChainPos) { this.launch = launch; }
 
   /** Seed the book from history: edition = 1 + sales since mint. Pre-launch closes are recorded as PRE_GAME. */
   loadHistoricalSale(sale: SaleForEdition): EditionClose {
@@ -100,7 +101,8 @@ export class EditionBook {
 
     const candidates = copies.filter((p) => {
       if (p.pulledAtMs >= sale.blockTimeMs || p.root === null) return false;
-      return before(this.roots.get(p.root)!.pos, sale.pos);
+      // Decision D2: the root must be in a strictly earlier block, which the PrintBook contract can enforce on chain.
+      return this.roots.get(p.root)!.pos.block < sale.pos.block;
     });
     candidates.sort((a, b) => (a.pulledAtMs !== b.pulledAtMs ? (a.pulledAtMs > b.pulledAtMs ? -1 : 1) : a.printNo - b.printNo));
     const latePulls = copies.filter((p) => p.pulledAtMs >= sale.blockTimeMs);
