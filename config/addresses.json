@@ -1,0 +1,11 @@
+{
+  "_source": "Build spec facts F6, F20, F21, F24, F25 (observed 2026-10-13). Re-verify in M0.",
+  "chainId": 143,
+  "chog": "0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763",
+  "seaport16": "0x0000000000000068F116a894984e2DB1123eB395",
+  "bulkTransferHelper": "0x0000000000c2d145a2526bd8c716263bfebe1a72",
+  "delegationManager": "0xdb9b1e94b5b69df7e401ddbede43491141047db3",
+  "chogToken": "0x350035555E10d9AfAF1566AaebfCeD5BA6C27777",
+  "wmon": "0x3bd359c1119da7da1d913d1c4d2b7c461115433a",
+  "knownRouters": []
+}
