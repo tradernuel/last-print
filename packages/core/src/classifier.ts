@@ -114,7 +114,9 @@ export function classifyTx(tx: TxContext, addr: ClassifierAddresses): Classified
     }
     if (to === addr.bulkTransferHelper) return { ...base, class: "BULK_MOVE" as const, rule: "R4" as const };
     if (to === addr.delegationManager) return { ...base, class: "SMART_WALLET_MOVE" as const, rule: "R5" as const };
-    if (to === addr.chog) return { ...base, class: "TRANSFER" as const, rule: "R6" as const };
+    // R6: the owner moves its own Chog: a direct call to the Chog contract, or the owning contract / smart wallet
+    // calling itself (tx.to is the sender of the Transfer). Paid moves never reach here: Seaport is checked first.
+    if (to === addr.chog || to === t.from) return { ...base, class: "TRANSFER" as const, rule: "R6" as const };
     if (to !== null && addr.knownRouters.includes(to)) return { ...base, class: "ROUTER_MOVE" as const, rule: "R7" as const };
     return { ...base, class: "UNCLASSIFIED" as const, rule: "R8" as const };
   });

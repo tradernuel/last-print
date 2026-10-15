@@ -1,5 +1,11 @@
 name: m0-data
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      skip_backfill:
+        description: "Skip the backfill and reuse data/chain from the last run (to resume the metadata mirror)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -7,7 +13,7 @@ permissions:
 jobs:
   data:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       MONAD_RPC_HTTP: https://rpc.monad.xyz
       HYPERSYNC_TOKEN: ${{ secrets.HYPERSYNC_TOKEN }}
@@ -19,6 +25,7 @@ jobs:
           node-version: 22
       - run: npm ci
       - name: Backfill and classify every Chog transfer (HyperSync + RPC)
+        if: ${{ !inputs.skip_backfill }}
         run: node --experimental-strip-types scripts/m0/backfill.ts
       - name: Mirror metadata
         if: always()

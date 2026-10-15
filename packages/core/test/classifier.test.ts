@@ -58,6 +58,11 @@ describe("classifier", () => {
     expect(classifyTx(tx(CONFIG.seaport16, [transferLog(A.seller, A.buyer, 5n)]), ADDR)[0]!.class).toBe("NO_PAYMENT_MOVE");
   });
 
+  it("R6: a contract or smart wallet sending its own Chog is a TRANSFER", () => {
+    const r = classifyTx(tx(A.seller, [transferLog(A.seller, A.buyer, 1n)]), ADDR)[0]!;
+    expect(r.class).toBe("TRANSFER"); expect(r.rule).toBe("R6");
+  });
+
   it("R4-R7 and R8", () => {
     const t = () => [transferLog(A.seller, A.buyer, 1n)];
     expect(classifyTx(tx(CONFIG.bulkTransferHelper, t()), ADDR)[0]!.class).toBe("BULK_MOVE");

@@ -94,11 +94,19 @@ const out = events.map((e) => ({
   class: e.class, rule: e.rule, txTo: txTo.get(e.txHash) ?? null,
   ...(e.sale ? {
     asset: e.sale.asset, route: e.sale.route, bundleSize: e.sale.bundleSize,
+    feeRecipients: [...new Set(e.sale.fees.map((f) => f.recipient))],
     price: e.sale.grossWei === null ? null : formatUnits18(e.sale.grossWei, 4),
     proceeds: e.sale.proceedsWei === null ? null : formatUnits18(e.sale.proceedsWei, 4),
   } : {}),
 }));
 writeJson("chain/events.json", out);
+
+// Full receipts of anything we could not classify, for manual review (spec rule 7: unknowns never change editions).
+const reviewTxs = new Set(out.filter((e) => e.class === "UNCLASSIFIED" || e.class === "NOMINAL_PRICE_MOVE").map((e) => e.tx));
+writeJson("review/receipts.json", receipts.filter((r) => reviewTxs.has(r.transactionHash)).map((r) => ({
+  tx: r.transactionHash, from: r.from, to: r.to, block: r.blockNumber, status: r.status,
+  logs: r.logs.map((l) => ({ address: l.address, topics: l.topics, data: l.data.length > 514 ? l.data.slice(0, 514) + "…" : l.data, logIndex: l.logIndex })),
+})));
 
 const byClass: Record<string, number> = {};
 for (const e of out) byClass[e.class] = (byClass[e.class] ?? 0) + 1;

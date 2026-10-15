@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import { ROOT, readJson } from "./lib.ts";
 
 type Any = any; // eslint-disable-line @typescript-eslint/no-explicit-any
-interface Ev { tx: string; block: string; time: string; tokenId: number; class: string; rule: string; txTo: string | null; route?: string; price?: string | null; asset?: string; bundleSize?: number }
+interface Ev { feeRecipients?: string[]; tx: string; block: string; time: string; tokenId: number; class: string; rule: string; txTo: string | null; route?: string; price?: string | null; asset?: string; bundleSize?: number }
 
 const lines: string[] = [];
 const L = (s = "") => lines.push(s);
@@ -33,8 +33,14 @@ L();
 const sales = events.filter((e) => e.class === "SALE");
 L("## Sales vs OpenSea (F15)");
 const osSales = os?.stats?.total?.sales ?? null;
-if (osSales !== null) L(`- Our SALE count ${sales.length} vs OpenSea all-time sales ${osSales} (diff ${pct(sales.length, osSales)}). Target ±1%: ${verdict(Math.abs(sales.length - osSales) <= Math.ceil(osSales * 0.01))}`);
-else L(`- Our SALE count ${sales.length}. OpenSea stats unavailable (see A5).`);
+const OS_FEE = "0x0000a26b00c1f0df003000390027140000faa719";
+const viaOpensea = sales.filter((e) => (e.feeRecipients ?? []).some((r) => r.toLowerCase() === OS_FEE));
+L(`- All paid sales on Monad: ${sales.length}. Of these, ${viaOpensea.length} paid the OpenSea fee; ${sales.length - viaOpensea.length} did not (other marketplaces or no-fee orders). Every one is a real sale and prints an edition.`);
+if (osSales !== null) L(`- OpenSea-fee sales ${viaOpensea.length} vs OpenSea all-time sales ${osSales} (diff ${pct(viaOpensea.length, osSales)}). Target ±1%: ${verdict(Math.abs(viaOpensea.length - osSales) <= Math.ceil(osSales * 0.01))}`);
+else L(`- OpenSea stats unavailable (see A5).`);
+const byTo = new Map<string, number>();
+for (const e of sales) byTo.set(e.txTo ?? "null", (byTo.get(e.txTo ?? "null") ?? 0) + 1);
+L(`- Sales by contract called: ${[...byTo].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} (${v})`).join(", ")}`);
 L();
 
 L("## 14-day window 2026-09-29 to 2026-10-13 (F18, F19)");
@@ -52,21 +58,25 @@ L();
 L("## Review lists");
 const unclassified = events.filter((e) => e.class === "UNCLASSIFIED");
 const nominal = events.filter((e) => e.class === "NOMINAL_PRICE_MOVE");
-const byTo = new Map<string, number>();
-for (const e of unclassified) byTo.set(e.txTo ?? "null", (byTo.get(e.txTo ?? "null") ?? 0) + 1);
-L(`- UNCLASSIFIED: ${unclassified.length} transfers. By tx.to: ${[...byTo].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => `${k} (${v})`).join(", ") || "none"}`);
+const unTo = new Map<string, number>();
+for (const e of unclassified) unTo.set(e.txTo ?? "null", (unTo.get(e.txTo ?? "null") ?? 0) + 1);
+L(`- UNCLASSIFIED: ${unclassified.length} transfers (full receipts in data/review/receipts.json). By tx.to: ${[...unTo].sort((a, b) => b[1] - a[1]).slice(0, 10).map(([k, v]) => `${k} (${v})`).join(", ") || "none"}`);
 L(`- NOMINAL_PRICE_MOVE: ${nominal.length}. Examples: ${nominal.slice(0, 5).map((e) => `${e.tx.slice(0, 12)}… ${e.price} ${e.asset}`).join("; ") || "none"}`);
 L(`- Bundles without per-item price: ${sales.filter((e) => e.price === null).length}`);
 L();
 
 L("## Metadata (F8, F11)");
-if (!meta) L("Metadata mirror did not complete.");
+if (!meta) L("Metadata mirror did not start.");
+else if (!meta.complete) L(`Metadata mirror incomplete: ${meta.tokens} of 1,969 fetched. Gateway errors: \`${JSON.stringify(meta.errors)}\`. Re-run with skip_backfill to resume.`);
 else {
+  if (meta.complete) {
   const want: Record<number, string> = { 1: "CHOG #1462", 1021: "CHOG #513", 1864: "CHOG #1356" };
   for (const s of meta.nameSamples) L(`- Token ${s.tokenId}: "${s.name}" (expected "${want[s.tokenId]}") ${verdict(s.name === want[s.tokenId])}`);
   L(`- totalSupply ${meta.totalSupply}, metadata files ${meta.tokens}. ${verdict(meta.tokens === 1969)}`);
   L(`- Tiers: ${JSON.stringify(meta.tiers)} (spec: Common 1279, Uncommon 590, Rare 60, Epic 30, Legendary 10)`);
   L(`- Trait types: ${Object.entries(meta.traitTypes).map(([k, v]: [string, Any]) => `${k} ${v.distinct} values on ${v.onTokens}`).join("; ")}`);
+  L(`- Backgrounds: ${meta.backgrounds ? Object.keys(meta.backgrounds).length : 0} values (spec F13: 32).`);
+  }
 }
 L();
 

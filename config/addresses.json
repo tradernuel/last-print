@@ -6,6 +6,7 @@
   "bulkTransferHelper": "0x0000000000c2d145a2526bd8c716263bfebe1a72",
   "delegationManager": "0xdb9b1e94b5b69df7e401ddbede43491141047db3",
   "chogToken": "0x350035555E10d9AfAF1566AaebfCeD5BA6C27777",
+  "openseaFeeRecipient": "0x0000a26b00c1f0df003000390027140000faa719",
   "wmon": "0x3bd359c1119da7da1d913d1c4d2b7c461115433a",
   "knownRouters": ["0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f"],
   "_minSalePriceNote": "Paid Seaport moves below this are NOMINAL_PRICE_MOVE (review list), not sales. Floor was ~5,000 MON on 2026-10-13; re-check if floor falls below 2,000.",
