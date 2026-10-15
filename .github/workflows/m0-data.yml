@@ -1,0 +1,40 @@
+name: m0-data
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      MONAD_RPC_HTTP: https://rpc.monad.xyz
+      HYPERSYNC_TOKEN: ${{ secrets.HYPERSYNC_TOKEN }}
+      OPENSEA_API_KEY: ${{ secrets.OPENSEA_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Backfill and classify every Chog transfer (HyperSync + RPC)
+        run: node --experimental-strip-types scripts/m0/backfill.ts
+      - name: Mirror metadata
+        if: always()
+        run: node --experimental-strip-types scripts/m0/metadata.ts
+      - name: Probe OpenSea API
+        if: always()
+        run: node --experimental-strip-types scripts/m0/opensea-probe.ts
+      - name: Write report
+        if: always()
+        run: node --experimental-strip-types scripts/m0/report.ts
+      - name: Commit data and report
+        if: always()
+        run: |
+          git config user.name "tradernuel"
+          git config user.email "134220128+tradernuel@users.noreply.github.com"
+          git add data docs/audit/M0-data.md
+          git diff --cached --quiet || git commit -m "data: M0 backfill, metadata and OpenSea probe"
+          git pull --rebase
+          git push
