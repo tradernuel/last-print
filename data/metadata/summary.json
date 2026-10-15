@@ -1,0 +1,16 @@
+{
+  "ranAt": "2026-10-15T17:19:23.197Z",
+  "totalSupply": "1969",
+  "tokens": 1965,
+  "failed": 4,
+  "errors": {
+    "<cid>.ipfs.dweb.link 429": 361,
+    "ipfs.io 429": 642,
+    "<cid>.ipfs.w3s.link 429": 948,
+    "nftstorage.link 429": 1228,
+    "<cid>.ipfs.4everland.io TimeoutError": 91,
+    "gateway.pinata.cloud 429": 667,
+    "4everland.io TimeoutError": 80
+  },
+  "complete": false
+}
