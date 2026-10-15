@@ -1,0 +1,22 @@
+{
+  "ranAt": "2026-10-15T15:04:22.325Z",
+  "hypersyncHeight": 113643951,
+  "startBlock": 100000000,
+  "transfers": 4849,
+  "byClass": {
+    "MINT": 1969,
+    "TRANSFER": 671,
+    "SALE": 1580,
+    "UNCLASSIFIED": 32,
+    "SMART_WALLET_MOVE": 409,
+    "BULK_MOVE": 185,
+    "NOMINAL_PRICE_MOVE": 3
+  },
+  "distinctTokensMinted": 1969,
+  "firstMint": {
+    "block": "101704044",
+    "time": "2026-09-03T19:58:42.000Z",
+    "tx": "0x5b920076bb42c57c4626f171b0ecc642b62d78d9479c45f4cff6690e5c169b51"
+  },
+  "seconds": 63
+}
