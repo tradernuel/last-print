@@ -50,4 +50,5 @@ export function tx(to: Address | null, logs: RawLog[], extra: Partial<TxContext>
 export const ADDR = {
   chog: CONFIG.chog, seaport16: CONFIG.seaport16, bulkTransferHelper: CONFIG.bulkTransferHelper,
   delegationManager: CONFIG.delegationManager, wmon: CONFIG.wmon, knownRouters: [A.router],
+  minSalePriceWei: CONFIG.minSalePriceWei,
 };

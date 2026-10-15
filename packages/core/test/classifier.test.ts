@@ -68,6 +68,45 @@ describe("classifier", () => {
     expect(r.class).toBe("UNCLASSIFIED"); expect(r.rule).toBe("R8");
   });
 
+  it("R2: seller fulfils a buyer's offer directly (offer side pays the seller, fees come out of it)", () => {
+    const logs = [
+      transferLog(A.seller, A.buyer, 445n),
+      fillLog(A.buyer, [{ itemType: 1, token: CONFIG.wmon, identifier: 0n, amount: MON(4900) }], [{ ...nft(445n), recipient: A.buyer }, wmon(MON(49), A.opensea)], A.seller),
+    ];
+    const r = classifyTx(tx(CONFIG.seaport16, logs, { from: A.seller }), ADDR)[0]!;
+    expect(r.class).toBe("SALE");
+    expect(r.sale!.route).toBe("OFFER_ACCEPTED");
+    expect(formatUnits18(r.sale!.proceedsWei!)).toBe("4851");
+    expect(formatUnits18(r.sale!.grossWei!)).toBe("4900");
+  });
+
+  it("R2b: a paid Seaport move at a nominal price is not a sale", () => {
+    const logs = [transferLog(A.seller, A.router, 1864n), fillLog(A.seller, [nft(1864n)], [native(MON(0.69), A.seller), { ...nft(1864n), recipient: A.router }])];
+    const r = classifyTx(tx(CONFIG.seaport16, logs), ADDR)[0]!;
+    expect(r.class).toBe("NOMINAL_PRICE_MOVE"); expect(r.rule).toBe("R2b");
+  });
+
+  it("sweep: separate fills from different sellers each get their own price", () => {
+    const s2 = A.creator;
+    const logs = [
+      transferLog(A.seller, A.buyer, 1n), transferLog(s2, A.buyer, 2n),
+      fillLog(A.seller, [nft(1n)], [native(MON(5940), A.seller), native(MON(60), A.opensea)]),
+      fillLog(s2, [nft(2n)], [native(MON(6039), s2), native(MON(61), A.opensea)]),
+    ];
+    const rs = classifyTx(tx(CONFIG.seaport16, logs), ADDR);
+    expect(rs.map((r) => formatUnits18(r.sale!.grossWei!))).toEqual(["6000", "6100"]);
+  });
+
+  it("same seller, separate fills: still priced per item", () => {
+    const logs = [
+      transferLog(A.seller, A.buyer, 1n), transferLog(A.seller, A.buyer, 2n),
+      fillLog(A.seller, [nft(1n)], [native(MON(5000), A.seller)]),
+      fillLog(A.seller, [nft(2n)], [native(MON(7000), A.seller)]),
+    ];
+    const rs = classifyTx(tx(CONFIG.seaport16, logs), ADDR);
+    expect(rs.map((r) => formatUnits18(r.sale!.proceedsWei!))).toEqual(["5000", "7000"]);
+  });
+
   it("bundle: two Chogs from one seller give no per-item price", () => {
     const logs = [
       transferLog(A.seller, A.buyer, 1n), transferLog(A.seller, A.buyer, 2n),

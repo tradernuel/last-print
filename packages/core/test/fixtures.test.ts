@@ -16,16 +16,20 @@ interface Fixture {
   logs: { address: string; topics: Hex[]; data: Hex; logIndex: number }[];
 }
 
-const EXPECTED: Record<string, { cls: EventClass; priceMon?: number }> = {
-  accepted_offer: { cls: "SALE", priceMon: 4422 },
-  listing_buy: { cls: "SALE", priceMon: 4949 },
-  basic_order_listing_buy: { cls: "SALE", priceMon: 5200 },
-  high_sale: { cls: "SALE", priceMon: 6786.5 },
-  no_payment_seaport_move: { cls: "NO_PAYMENT_MOVE" },
+/**
+ * Expected results checked against the decoded chain data (see docs/audit/M0.md for corrections to the spec):
+ * prices are what the buyer paid (seller proceeds + fees), in MON or WMON, per token.
+ */
+const EXPECTED: Record<string, { cls: EventClass; grossMon?: Record<string, number> }> = {
+  accepted_offer: { cls: "SALE", grossMon: { "1473": 4422 } },
+  listing_buy: { cls: "SALE", grossMon: { "445": 4900 } },           // actually a direct offer acceptance
+  basic_order_listing_buy: { cls: "SALE", grossMon: { "650": 5200 } },
+  high_sale: { cls: "SALE", grossMon: { "1707": 6000, "1864": 6100, "768": 6100, "599": 6319 } }, // 4-Chog sweep
+  no_payment_seaport_move: { cls: "NOMINAL_PRICE_MOVE" },            // 0.69 MON, not "no payment"
   bulk_move: { cls: "BULK_MOVE" },
   smart_wallet_move: { cls: "SMART_WALLET_MOVE" },
   direct_transfer: { cls: "TRANSFER" },
-  multicall_router: { cls: "ROUTER_MOVE" },
+  multicall_router: { cls: "SALE", grossMon: { "1889": 5821, "1471": 6325, "822": 6325 } }, // aggregator sweep, paid
 };
 
 const dir = new URL("./fixtures/", import.meta.url);
@@ -55,13 +59,13 @@ describe("real Monad transactions", () => {
       const classes = [...new Set(results.map((r) => r.class))];
       expect(classes, `classes found: ${classes.join(", ")}; tx.to = ${f!.tx.to}`).toEqual([exp.cls]);
 
-      if (exp.priceMon !== undefined) {
-        const sale = results[0]!.sale!;
-        if (sale.bundleSize > 1) return; // bundles have no per-item price
-        const proceeds = wholeMon(sale.proceedsWei!);
-        const gross = proceeds + sale.fees.reduce((s, p) => s + wholeMon(p.amountWei), 0);
-        const close = (v: number) => Math.abs(v - exp.priceMon!) / exp.priceMon! < 0.01;
-        expect(close(proceeds) || close(gross), `proceeds ${proceeds} MON, gross ${gross} MON, expected ≈ ${exp.priceMon}`).toBe(true);
+      if (exp.grossMon) {
+        expect(results.map((r) => r.tokenId.toString()).sort()).toEqual(Object.keys(exp.grossMon).sort());
+        for (const r of results) {
+          const want = exp.grossMon[r.tokenId.toString()]!;
+          const got = wholeMon(r.sale!.grossWei!);
+          expect(Math.abs(got - want), `token ${r.tokenId}: gross ${got}, expected ≈ ${want}`).toBeLessThan(1);
+        }
       }
     });
   }

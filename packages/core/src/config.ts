@@ -13,6 +13,7 @@ export const CONFIG = {
   chogToken: getAddress(addresses.chogToken),
   wmon: getAddress(addresses.wmon),
   knownRouters: (addresses.knownRouters as string[]).map((a) => getAddress(a)) as Address[],
+  minSalePriceWei: BigInt(addresses.minSalePriceMon) * 10n ** 18n,
   odds,
   stats,
   foils,
