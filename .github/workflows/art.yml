@@ -1,0 +1,27 @@
+name: art
+on: workflow_dispatch
+
+permissions:
+  contents: write
+
+jobs:
+  art:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Mirror Chog art and sample Background colours
+        run: node --experimental-strip-types scripts/m0/art.ts
+      - name: Commit art
+        if: always()
+        run: |
+          git config user.name "tradernuel"
+          git config user.email "134220128+tradernuel@users.noreply.github.com"
+          git add apps/web/public/art data/art
+          git diff --cached --quiet || git commit -m "art: mirror Chog images (512 and 256 px) and Background colours"
+          git pull --rebase
+          git push
