@@ -33,6 +33,9 @@ jobs:
       - name: Probe OpenSea API
         if: always()
         run: node --experimental-strip-types scripts/m0/opensea-probe.ts
+      - name: Download all OpenSea sale events
+        if: always()
+        run: node --experimental-strip-types scripts/m0/opensea-sales.ts
       - name: Write report
         if: always()
         run: node --experimental-strip-types scripts/m0/report.ts

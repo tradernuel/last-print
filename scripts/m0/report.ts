@@ -41,6 +41,24 @@ else L(`- OpenSea stats unavailable (see A5).`);
 const byTo = new Map<string, number>();
 for (const e of sales) byTo.set(e.txTo ?? "null", (byTo.get(e.txTo ?? "null") ?? 0) + 1);
 L(`- Sales by contract called: ${[...byTo].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} (${v})`).join(", ")}`);
+
+const osEvents = readJson<{ tx: string; tokenId: number; time: string; price: string | null }[]>("opensea/sale-events.json");
+if (osEvents) {
+  // Compare only up to the earlier of the two snapshots so timing doesn't create differences.
+  const cutoff = [events.length ? events[events.length - 1]!.time : "", osEvents.reduce((m, e) => (e.time > m ? e.time : m), "")].sort()[0]!;
+  const key = (tx: string, id: number) => `${tx.toLowerCase()}:${id}`;
+  const ours = new Map(sales.filter((e) => e.time <= cutoff).map((e) => [key(e.tx, e.tokenId), e]));
+  const theirs = new Map(osEvents.filter((e) => e.time <= cutoff).map((e) => [key(e.tx, e.tokenId), e]));
+  const onlyOurs = [...ours.keys()].filter((k) => !theirs.has(k));
+  const onlyTheirs = [...theirs.keys()].filter((k) => !ours.has(k));
+  let priceMismatch = 0;
+  for (const [k, e] of ours) { const o = theirs.get(k); if (o?.price && e.price && Math.abs(Number(o.price) - Number(e.price)) > 0.5) priceMismatch++; }
+  L(`- One-by-one comparison up to ${cutoff}: ours ${ours.size}, OpenSea events ${theirs.size}, in both ${ours.size - onlyOurs.length}, only ours ${onlyOurs.length}, only OpenSea ${onlyTheirs.length}, price differences > 0.5 MON: ${priceMismatch}. ${verdict(onlyTheirs.length === 0 && priceMismatch === 0)}`);
+  const show = (ks: string[], m: Map<string, Ev | { tx: string; tokenId: number; time: string; price: string | null }>) =>
+    ks.slice(0, 25).map((k) => { const e = m.get(k)!; return `${e.tx.slice(0, 14)}… #${e.tokenId} ${e.time.slice(0, 16)} ${e.price ?? "?"}${"txTo" in e && e.txTo ? ` via ${e.txTo.slice(0, 10)}` : ""}`; });
+  if (onlyOurs.length) L(`  - Only ours: ${show(onlyOurs, ours).join("; ")}`);
+  if (onlyTheirs.length) L(`  - Only OpenSea: ${show(onlyTheirs, theirs).join("; ")}`);
+}
 L();
 
 L("## 14-day window 2026-09-29 to 2026-10-13 (F18, F19)");
@@ -48,6 +66,7 @@ const win = sales.filter((e) => e.time >= "2026-09-29T00:00:00Z" && e.time < "20
 const perDay = new Map<string, number>();
 for (const e of win) perDay.set(e.time.slice(0, 10), (perDay.get(e.time.slice(0, 10)) ?? 0) + 1);
 const listingBuys = win.filter((e) => e.route === "LISTING_BOUGHT");
+L(`- Note: the spec's 126 equals the sales sent straight to Seaport only; sales through smart wallets and aggregators are real and counted here.`);
 L(`- Sales ${win.length} (spec 126), listing buys ${listingBuys.length} (spec 104), offers accepted ${win.length - listingBuys.length} (spec 22), distinct Chogs ${new Set(win.map((e) => e.tokenId)).size}.`);
 L(`- Fewest sales in a day: ${perDay.size ? Math.min(...perDay.values()) : 0} over ${perDay.size} days (spec: never fewer than 2).`);
 const prices = listingBuys.map((e) => Number(e.price)).filter((n) => Number.isFinite(n)).sort((a, b) => a - b);
