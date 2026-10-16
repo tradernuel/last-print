@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/web"
+  ],
   "scripts": {
     "test": "npm run test --workspaces --if-present",
     "typecheck": "tsc -p packages/core/tsconfig.json --noEmit",
@@ -11,5 +14,7 @@
     "fixtures:fetch": "node --experimental-strip-types scripts/fetch-fixtures.ts",
     "verify:pack": "node --experimental-strip-types scripts/verify-pack.ts"
   },
-  "engines": { "node": ">=22" }
+  "engines": {
+    "node": ">=22"
+  }
 }

@@ -13,3 +13,4 @@ data/mirror/
 # private build spec must never be committed
 SPEC*.md
 spec*.md
+apps/web/public/data/

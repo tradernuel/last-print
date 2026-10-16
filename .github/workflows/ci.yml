@@ -10,6 +10,7 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npm run build -w @last-print/web
       - run: npm audit --audit-level=high || true
   contracts:
     runs-on: ubuntu-latest
