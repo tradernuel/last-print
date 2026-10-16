@@ -36,7 +36,7 @@ const osSales = os?.stats?.total?.sales ?? null;
 const OS_FEE = "0x0000a26b00c1f0df003000390027140000faa719";
 const viaOpensea = sales.filter((e) => (e.feeRecipients ?? []).some((r) => r.toLowerCase() === OS_FEE));
 L(`- All paid sales on Monad: ${sales.length}. Of these, ${viaOpensea.length} paid the OpenSea fee; ${sales.length - viaOpensea.length} did not (other marketplaces or no-fee orders). Every one is a real sale and prints an edition.`);
-if (osSales !== null) L(`- OpenSea-fee sales ${viaOpensea.length} vs OpenSea all-time sales ${osSales} (diff ${pct(viaOpensea.length, osSales)}). Target ±1%: ${verdict(Math.abs(viaOpensea.length - osSales) <= Math.ceil(osSales * 0.01))}`);
+if (osSales !== null) L(`- OpenSea's stats endpoint says ${osSales} all-time sales (${pct(viaOpensea.length, osSales)} from ours). That figure lags or filters; the event-by-event comparison below is the real check.`);
 else L(`- OpenSea stats unavailable (see A5).`);
 const byTo = new Map<string, number>();
 for (const e of sales) byTo.set(e.txTo ?? "null", (byTo.get(e.txTo ?? "null") ?? 0) + 1);
@@ -53,7 +53,10 @@ if (osEvents) {
   const onlyTheirs = [...theirs.keys()].filter((k) => !ours.has(k));
   let priceMismatch = 0;
   for (const [k, e] of ours) { const o = theirs.get(k); if (o?.price && e.price && Math.abs(Number(o.price) - Number(e.price)) > 0.5) priceMismatch++; }
-  L(`- One-by-one comparison up to ${cutoff}: ours ${ours.size}, OpenSea events ${theirs.size}, in both ${ours.size - onlyOurs.length}, only ours ${onlyOurs.length}, only OpenSea ${onlyTheirs.length}, price differences > 0.5 MON: ${priceMismatch}. ${verdict(onlyTheirs.length === 0 && priceMismatch === 0)}`);
+  // OpenSea lists nominal-price moves as sales; we exclude them on purpose (decision D12).
+  const nominalKeys = new Set(events.filter((e) => e.class === "NOMINAL_PRICE_MOVE").map((e) => key(e.tx, e.tokenId)));
+  const unexplained = onlyTheirs.filter((k) => !nominalKeys.has(k));
+  L(`- One-by-one comparison up to ${cutoff}: ours ${ours.size}, OpenSea events ${theirs.size}, in both ${ours.size - onlyOurs.length}, only ours ${onlyOurs.length}, only OpenSea ${onlyTheirs.length} (${onlyTheirs.length - unexplained.length} are nominal-price moves we exclude on purpose), price differences > 0.5 MON: ${priceMismatch}. ${verdict(onlyOurs.length === 0 && unexplained.length === 0 && priceMismatch === 0)}`);
   const show = (ks: string[], m: Map<string, Ev | { tx: string; tokenId: number; time: string; price: string | null }>) =>
     ks.slice(0, 25).map((k) => { const e = m.get(k)!; return `${e.tx.slice(0, 14)}… #${e.tokenId} ${e.time.slice(0, 16)} ${e.price ?? "?"}${"txTo" in e && e.txTo ? ` via ${e.txTo.slice(0, 10)}` : ""}`; });
   if (onlyOurs.length) L(`  - Only ours: ${show(onlyOurs, ours).join("; ")}`);

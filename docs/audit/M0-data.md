@@ -1,6 +1,6 @@
 # M0 data report (generated)
 
-Generated 2026-10-16T12:36:05.112Z by `scripts/m0/report.ts`. Raw data is in `data/`.
+Generated 2026-10-16T12:41:57.591Z by `scripts/m0/report.ts`. Raw data is in `data/`.
 
 ## A3/A4: backfill
 - 4904 Chog transfers since block 100000000, fetched in 72 s. **PASS**
@@ -10,9 +10,9 @@ Generated 2026-10-16T12:36:05.112Z by `scripts/m0/report.ts`. Raw data is in `da
 
 ## Sales vs OpenSea (F15)
 - All paid sales on Monad: 1590. Of these, 1590 paid the OpenSea fee; 0 did not (other marketplaces or no-fee orders). Every one is a real sale and prints an edition.
-- OpenSea-fee sales 1590 vs OpenSea all-time sales 1563 (diff 1.7%). Target ±1%: **CHECK**
+- OpenSea's stats endpoint says 1563 all-time sales (1.7% from ours). That figure lags or filters; the event-by-event comparison below is the real check.
 - Sales by contract called: 0x0000000000000068F116a894984e2DB1123eB395 (1171), 0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3 (259), 0xb92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f (87), 0xCcC88a9d1B4ED6b0EABA998850414b24f1c315bE (73)
-- One-by-one comparison up to 2026-10-15T21:45:41.000Z: ours 1590, OpenSea events 1593, in both 1590, only ours 0, only OpenSea 3, price differences > 0.5 MON: 0. **CHECK**
+- One-by-one comparison up to 2026-10-15T21:45:41.000Z: ours 1590, OpenSea events 1593, in both 1590, only ours 0, only OpenSea 3 (3 are nominal-price moves we exclude on purpose), price differences > 0.5 MON: 0. **PASS**
   - Only OpenSea: 0xb99816a46217… #1864 2026-10-01T02:59 0.69; 0xb3c2dbad6afa… #155 2026-09-07T15:15 270; 0xf4c77ff7b1c4… #1887 2026-09-06T16:48 11.9
 
 ## 14-day window 2026-09-29 to 2026-10-13 (F18, F19)

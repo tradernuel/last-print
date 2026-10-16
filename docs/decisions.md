@@ -27,3 +27,5 @@ Choices made where the build spec was silent or had to change. Each keeps the pr
 **D12. Nominal-price moves are not sales.** A paid Seaport move below `minSalePriceMon` (1,000 MON, ~20% of the floor on 13 Oct) is classed `NOMINAL_PRICE_MOVE`: no edition change, listed for review. Found in real data: a "no payment" move that actually paid 0.69 MON.
 
 **D13. "Price" means what the buyer paid.** Price = seller proceeds + fees, per token. Seller proceeds are stored separately. When a seller accepts an offer directly, the seller receives the offer amount and pays the fees from it, so price = the offer amount.
+
+**D14. OpenSea's event list is the cross-check, not its stats number.** Every sale we detect matches an OpenSea sale event by tx, token and price. OpenSea's stats endpoint reports a lower total, so it isn't used as the check.
