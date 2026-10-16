@@ -1,14 +1,14 @@
 {
-  "ranAt": "2026-10-15T17:20:17.364Z",
+  "ranAt": "2026-10-16T12:28:37.580Z",
   "stats": {
     "status": 200,
     "error": null,
     "total": {
-      "volume": 149.90031153361863,
+      "volume": 149.6708184129804,
       "volume_symbol": "ETH",
-      "sales": 1553,
-      "num_owners": 987,
-      "floor_price": 5694.99,
+      "sales": 1563,
+      "num_owners": 979,
+      "floor_price": 6240,
       "floor_price_symbol": "MON"
     }
   },
@@ -36,73 +36,73 @@
   },
   "listingsAll": {
     "status": 200,
-    "ms": 641,
+    "ms": 670,
     "error": null,
     "rateLimitRemaining": "119",
     "count": 100,
     "hasNext": true,
     "samples": [
       {
-        "tokenId": "1233",
+        "tokenId": "1466",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5694990000000000000000",
+        "value": "6240000000000000000000",
         "decimals": 18
       },
       {
-        "tokenId": "1482",
+        "tokenId": "390",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5694999900000000000000",
+        "value": "6250000000000000000000",
         "decimals": 18
       },
       {
-        "tokenId": "424",
+        "tokenId": "460",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5695000000000000000000",
+        "value": "6300000000000000000000",
         "decimals": 18
       }
     ]
   },
   "listingsBest": {
     "status": 200,
-    "ms": 48783,
+    "ms": 757,
     "error": null,
     "rateLimitRemaining": "599",
     "count": 100,
     "hasNext": true,
     "samples": [
       {
-        "tokenId": "1233",
+        "tokenId": "1466",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5694990000000000000000",
+        "value": "6240000000000000000000",
         "decimals": 18
       },
       {
-        "tokenId": "1482",
+        "tokenId": "390",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5694999900000000000000",
+        "value": "6250000000000000000000",
         "decimals": 18
       },
       {
-        "tokenId": "424",
+        "tokenId": "460",
         "token": "0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763",
         "currency": "MON",
-        "value": "5695000000000000000000",
+        "value": "6300000000000000000000",
         "decimals": 18
       }
     ]
   },
   "offers": {
     "status": 200,
-    "ms": 2170,
+    "ms": 744,
     "error": null,
-    "rateLimitRemaining": "599",
-    "count": 47,
-    "hasNext": false,
+    "rateLimitRemaining": "598",
+    "count": 50,
+    "hasNext": true,
     "samples": [
       {
         "value": "82000000000000000000000",
@@ -123,47 +123,47 @@
   },
   "saleEvents": {
     "status": 200,
-    "ms": 862,
+    "ms": 659,
     "error": null,
-    "rateLimitRemaining": "118",
+    "rateLimitRemaining": "112",
     "count": 50,
     "hasNext": true,
     "samples": [
       {
-        "tokenId": "1090",
-        "tx": "0x5427ca3e4f9b61549a4c71b759861af084422c1f57cbabe5f567d9e45a98c26d",
+        "tokenId": "286",
+        "tx": "0xc53dde76704820505c10b71c64587b4b7521a6b082515204c3872667c2b99ff7",
         "quantity": 1,
         "payment": {
-          "quantity": "4949000000000000000000",
+          "quantity": "6220000000000000000000",
           "token_address": "0x0000000000000000000000000000000000000000",
           "decimals": 18,
           "symbol": "MON"
         },
-        "time": 1792071142
+        "time": 1792100741
       },
       {
-        "tokenId": "996",
-        "tx": "0xfd665a0e7be480c49b1a30c1d4fb3a236536d35dcbb418dbb27eef572c015aa2",
+        "tokenId": "424",
+        "tx": "0x8695a4996318700c4eefe3241c4a0afa89be84143a789045af0e97c0d5dc0a48",
         "quantity": 1,
         "payment": {
-          "quantity": "4950000000000000000000",
+          "quantity": "5695000000000000000000",
           "token_address": "0x0000000000000000000000000000000000000000",
           "decimals": 18,
           "symbol": "MON"
         },
-        "time": 1792071115
+        "time": 1792100727
       },
       {
-        "tokenId": "1931",
-        "tx": "0xe02308bca64238a7847789768c911414266261af11a726ed0e3d464038697bdf",
+        "tokenId": "723",
+        "tx": "0x8695a4996318700c4eefe3241c4a0afa89be84143a789045af0e97c0d5dc0a48",
         "quantity": 1,
         "payment": {
-          "quantity": "5294750000000000000000",
+          "quantity": "6100000000000000000000",
           "token_address": "0x0000000000000000000000000000000000000000",
           "decimals": 18,
           "symbol": "MON"
         },
-        "time": 1791991174
+        "time": 1792100727
       }
     ]
   }

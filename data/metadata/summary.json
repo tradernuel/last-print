@@ -1,16 +1,121 @@
 {
-  "ranAt": "2026-10-15T17:19:23.197Z",
+  "ranAt": "2026-10-16T12:28:33.131Z",
   "totalSupply": "1969",
-  "tokens": 1965,
-  "failed": 4,
-  "errors": {
-    "<cid>.ipfs.dweb.link 429": 361,
-    "ipfs.io 429": 642,
-    "<cid>.ipfs.w3s.link 429": 948,
-    "nftstorage.link 429": 1228,
-    "<cid>.ipfs.4everland.io TimeoutError": 91,
-    "gateway.pinata.cloud 429": 667,
-    "4everland.io TimeoutError": 80
+  "tokens": 1969,
+  "complete": true,
+  "nameSamples": [
+    {
+      "tokenId": 1,
+      "name": "CHOG #1462"
+    },
+    {
+      "tokenId": 1021,
+      "name": "CHOG #513"
+    },
+    {
+      "tokenId": 1864,
+      "name": "CHOG #1356"
+    }
+  ],
+  "traitTypes": {
+    "Background": {
+      "distinct": 32,
+      "onTokens": 1959
+    },
+    "Base": {
+      "distinct": 4,
+      "onTokens": 1969
+    },
+    "Skin": {
+      "distinct": 14,
+      "onTokens": 1959
+    },
+    "Side": {
+      "distinct": 2,
+      "onTokens": 1959
+    },
+    "Body": {
+      "distinct": 96,
+      "onTokens": 1762
+    },
+    "Mouth": {
+      "distinct": 15,
+      "onTokens": 1804
+    },
+    "Eyes": {
+      "distinct": 58,
+      "onTokens": 1959
+    },
+    "Head": {
+      "distinct": 66,
+      "onTokens": 1716
+    },
+    "Accessory": {
+      "distinct": 9,
+      "onTokens": 195
+    },
+    "Form": {
+      "distinct": 2,
+      "onTokens": 1959
+    },
+    "Tier": {
+      "distinct": 5,
+      "onTokens": 1969
+    },
+    "Naked": {
+      "distinct": 2,
+      "onTokens": 1959
+    },
+    "Aura": {
+      "distinct": 22,
+      "onTokens": 974
+    }
   },
-  "complete": false
+  "tiers": {
+    "Uncommon": 590,
+    "Common": 1279,
+    "Rare": 60,
+    "Epic": 30,
+    "Legendary": 10
+  },
+  "bases": {
+    "Origin": 1869,
+    "Skull": 60,
+    "Radioactive": 30,
+    "1:1": 10
+  },
+  "backgrounds": {
+    "Deep Aqua": 46,
+    "Sunlight": 130,
+    "Rosie": 127,
+    "Sky Blue": 85,
+    "Mon": 131,
+    "Aqua Mint": 69,
+    "Coral Pink": 121,
+    "Light Magenta": 92,
+    "Rosy Pink": 47,
+    "Lemon": 142,
+    "Mint": 114,
+    "Fresh Green": 85,
+    "Light Purple": 183,
+    "Aqua": 133,
+    "Soft Lavender": 86,
+    "Lemon Yellow": 129,
+    "Peach Pink": 95,
+    "Lime Green": 46,
+    "Radioactive": 30,
+    "Deep Blue": 45,
+    "Noble Blue": 1,
+    "Red Sky": 3,
+    "Afternoon Orange": 1,
+    "Deep Purple": 3,
+    "Gold": 3,
+    "Royal Blue": 2,
+    "Bright Yellow": 2,
+    "Magenta": 3,
+    "Blood Red": 1,
+    "Aqua Blue": 1,
+    "Rose Pink": 1,
+    "Supreme Purple": 2
+  }
 }

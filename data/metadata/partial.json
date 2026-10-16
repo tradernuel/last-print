@@ -110005,5 +110005,229 @@
         }
       ]
     }
+  },
+  {
+    "tokenId": 939,
+    "uri": "ipfs://bafybeid4ybujnscdipkno7ps5utqelp5ry5ryreqhay3zhgk3a6x4jruqu/431.json",
+    "meta": {
+      "name": "CHOG #431",
+      "description": "CHOG — a 1969-piece collection on Monad.",
+      "image": "ipfs://bafybeihau2egcccbdxymeckmmbrqytbfor5gkt3en6d5fsbueymdbq7g6e/431.webp",
+      "attributes": [
+        {
+          "trait_type": "Background",
+          "value": "Sky Blue"
+        },
+        {
+          "trait_type": "Aura",
+          "value": "Cool Aura"
+        },
+        {
+          "trait_type": "Base",
+          "value": "Origin"
+        },
+        {
+          "trait_type": "Skin",
+          "value": "Black"
+        },
+        {
+          "trait_type": "Side",
+          "value": "Right"
+        },
+        {
+          "trait_type": "Body",
+          "value": "Red Tuxedo"
+        },
+        {
+          "trait_type": "Mouth",
+          "value": "Worried"
+        },
+        {
+          "trait_type": "Eyes",
+          "value": "Normal Eye"
+        },
+        {
+          "trait_type": "Head",
+          "value": "Balls Cap"
+        },
+        {
+          "trait_type": "Form",
+          "value": "Chog"
+        },
+        {
+          "trait_type": "Tier",
+          "value": "Common"
+        },
+        {
+          "trait_type": "Naked",
+          "value": "No"
+        }
+      ]
+    }
+  },
+  {
+    "tokenId": 1169,
+    "uri": "ipfs://bafybeid4ybujnscdipkno7ps5utqelp5ry5ryreqhay3zhgk3a6x4jruqu/661.json",
+    "meta": {
+      "name": "CHOG #661",
+      "description": "CHOG — a 1969-piece collection on Monad.",
+      "image": "ipfs://bafybeihau2egcccbdxymeckmmbrqytbfor5gkt3en6d5fsbueymdbq7g6e/661.webp",
+      "attributes": [
+        {
+          "trait_type": "Background",
+          "value": "Lemon"
+        },
+        {
+          "trait_type": "Base",
+          "value": "Origin"
+        },
+        {
+          "trait_type": "Skin",
+          "value": "Pink"
+        },
+        {
+          "trait_type": "Side",
+          "value": "Left"
+        },
+        {
+          "trait_type": "Mouth",
+          "value": "normal smile"
+        },
+        {
+          "trait_type": "Eyes",
+          "value": "Side Eye"
+        },
+        {
+          "trait_type": "Head",
+          "value": "10k TPS Cap"
+        },
+        {
+          "trait_type": "Form",
+          "value": "Chog"
+        },
+        {
+          "trait_type": "Tier",
+          "value": "Uncommon"
+        },
+        {
+          "trait_type": "Naked",
+          "value": "No"
+        }
+      ]
+    }
+  },
+  {
+    "tokenId": 1177,
+    "uri": "ipfs://bafybeid4ybujnscdipkno7ps5utqelp5ry5ryreqhay3zhgk3a6x4jruqu/669.json",
+    "meta": {
+      "name": "CHOG #669",
+      "description": "CHOG — a 1969-piece collection on Monad.",
+      "image": "ipfs://bafybeihau2egcccbdxymeckmmbrqytbfor5gkt3en6d5fsbueymdbq7g6e/669.webp",
+      "attributes": [
+        {
+          "trait_type": "Background",
+          "value": "Lime Green"
+        },
+        {
+          "trait_type": "Base",
+          "value": "Origin"
+        },
+        {
+          "trait_type": "Skin",
+          "value": "Origin"
+        },
+        {
+          "trait_type": "Side",
+          "value": "Left"
+        },
+        {
+          "trait_type": "Body",
+          "value": "Peach Hoodie"
+        },
+        {
+          "trait_type": "Mouth",
+          "value": "Sad"
+        },
+        {
+          "trait_type": "Eyes",
+          "value": "Retard"
+        },
+        {
+          "trait_type": "Head",
+          "value": "RH Beanie"
+        },
+        {
+          "trait_type": "Form",
+          "value": "Chog"
+        },
+        {
+          "trait_type": "Tier",
+          "value": "Uncommon"
+        },
+        {
+          "trait_type": "Naked",
+          "value": "No"
+        }
+      ]
+    }
+  },
+  {
+    "tokenId": 978,
+    "uri": "ipfs://bafybeid4ybujnscdipkno7ps5utqelp5ry5ryreqhay3zhgk3a6x4jruqu/470.json",
+    "meta": {
+      "name": "CHOG #470",
+      "description": "CHOG — a 1969-piece collection on Monad.",
+      "image": "ipfs://bafybeihau2egcccbdxymeckmmbrqytbfor5gkt3en6d5fsbueymdbq7g6e/470.webp",
+      "attributes": [
+        {
+          "trait_type": "Background",
+          "value": "Coral Pink"
+        },
+        {
+          "trait_type": "Aura",
+          "value": "Royal Blue Aura"
+        },
+        {
+          "trait_type": "Base",
+          "value": "Origin"
+        },
+        {
+          "trait_type": "Skin",
+          "value": "Pink"
+        },
+        {
+          "trait_type": "Side",
+          "value": "Right"
+        },
+        {
+          "trait_type": "Body",
+          "value": "Fire Shirt"
+        },
+        {
+          "trait_type": "Mouth",
+          "value": "Rainbow Puke"
+        },
+        {
+          "trait_type": "Eyes",
+          "value": "Retro Glass"
+        },
+        {
+          "trait_type": "Head",
+          "value": "Bob Hair"
+        },
+        {
+          "trait_type": "Form",
+          "value": "Chog"
+        },
+        {
+          "trait_type": "Tier",
+          "value": "Common"
+        },
+        {
+          "trait_type": "Naked",
+          "value": "No"
+        }
+      ]
+    }
   }
 ]
