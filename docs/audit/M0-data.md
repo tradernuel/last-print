@@ -1,19 +1,22 @@
 # M0 data report (generated)
 
-Generated 2026-10-16T12:28:37.824Z by `scripts/m0/report.ts`. Raw data is in `data/`.
+Generated 2026-10-16T12:36:05.112Z by `scripts/m0/report.ts`. Raw data is in `data/`.
 
 ## A3/A4: backfill
-- 4851 Chog transfers since block 100000000, fetched in 64 s. **PASS**
+- 4904 Chog transfers since block 100000000, fetched in 72 s. **PASS**
 - Tokens minted: 1969 (expected 1,969). **PASS**
 - First mint: block 101704044 at 2026-09-03T19:58:42.000Z (spec F7: ≈ 101,704,044, 2026-09-03 19:58 UTC).
-- By class: MINT 1969, TRANSFER 701, SALE 1580, UNCLASSIFIED 2, SMART_WALLET_MOVE 411, BULK_MOVE 185, NOMINAL_PRICE_MOVE 3
+- By class: MINT 1969, TRANSFER 703, SALE 1590, UNCLASSIFIED 2, SMART_WALLET_MOVE 450, BULK_MOVE 187, NOMINAL_PRICE_MOVE 3
 
 ## Sales vs OpenSea (F15)
-- All paid sales on Monad: 1580. Of these, 1580 paid the OpenSea fee; 0 did not (other marketplaces or no-fee orders). Every one is a real sale and prints an edition.
-- OpenSea-fee sales 1580 vs OpenSea all-time sales 1563 (diff 1.1%). Target ±1%: **CHECK**
-- Sales by contract called: 0x0000000000000068F116a894984e2DB1123eB395 (1161), 0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3 (259), 0xb92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f (87), 0xCcC88a9d1B4ED6b0EABA998850414b24f1c315bE (73)
+- All paid sales on Monad: 1590. Of these, 1590 paid the OpenSea fee; 0 did not (other marketplaces or no-fee orders). Every one is a real sale and prints an edition.
+- OpenSea-fee sales 1590 vs OpenSea all-time sales 1563 (diff 1.7%). Target ±1%: **CHECK**
+- Sales by contract called: 0x0000000000000068F116a894984e2DB1123eB395 (1171), 0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3 (259), 0xb92fe925DC43a0ECdE6c8b1a2709c170Ec4fFf4f (87), 0xCcC88a9d1B4ED6b0EABA998850414b24f1c315bE (73)
+- One-by-one comparison up to 2026-10-15T21:45:41.000Z: ours 1590, OpenSea events 1593, in both 1590, only ours 0, only OpenSea 3, price differences > 0.5 MON: 0. **CHECK**
+  - Only OpenSea: 0xb99816a46217… #1864 2026-10-01T02:59 0.69; 0xb3c2dbad6afa… #155 2026-09-07T15:15 270; 0xf4c77ff7b1c4… #1887 2026-09-06T16:48 11.9
 
 ## 14-day window 2026-09-29 to 2026-10-13 (F18, F19)
+- Note: the spec's 126 equals the sales sent straight to Seaport only; sales through smart wallets and aggregators are real and counted here.
 - Sales 163 (spec 126), listing buys 95 (spec 104), offers accepted 68 (spec 22), distinct Chogs 106.
 - Fewest sales in a day: 3 over 14 days (spec: never fewer than 2).
 - Listing-buy prices: p25 5244, median 6000, p75 6499 MON (spec 4,999 / ≈5,452 / ≈6,700).
@@ -33,13 +36,13 @@ Generated 2026-10-16T12:28:37.824Z by `scripts/m0/report.ts`. Raw data is in `da
 - Backgrounds: 32 values (spec F13: 32).
 
 ## A5: OpenSea API
-- listingsAll: HTTP 200, 100 items (more pages), 670 ms
+- listingsAll: HTTP 200, 100 items (more pages), 791 ms
   - sample: `{"tokenId":"1466","token":"0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763","currency":"MON","value":"6240000000000000000000","decimals":18}`
-- listingsBest: HTTP 200, 100 items (more pages), 757 ms
+- listingsBest: HTTP 200, 100 items (more pages), 723 ms
   - sample: `{"tokenId":"1466","token":"0xc96d31f8626c6d03fae5dcd3d61e3fb9f4a73763","currency":"MON","value":"6240000000000000000000","decimals":18}`
-- offers: HTTP 200, 50 items (more pages), 744 ms
+- offers: HTTP 200, 50 items (more pages), 773 ms
   - sample: `{"value":"82000000000000000000000","currency":"WMON","criteria":"collection/trait"}`
-- saleEvents: HTTP 200, 50 items (more pages), 659 ms
+- saleEvents: HTTP 200, 50 items (more pages), 706 ms
   - sample: `{"tokenId":"286","tx":"0xc53dde76704820505c10b71c64587b4b7521a6b082515204c3872667c2b99ff7","quantity":1,"payment":{"quantity":"6220000000000000000000","token_address":"0x0000000000000000000000000000000000000000","decimals":18,"symbol":"MON"},"time":1792100741}`
 - Stats HTTP 200; floor 6240 MON, owners 979.
 

@@ -1,10 +1,10 @@
 {
-  "ranAt": "2026-10-16T12:28:37.580Z",
+  "ranAt": "2026-10-16T12:35:39.319Z",
   "stats": {
     "status": 200,
     "error": null,
     "total": {
-      "volume": 149.6708184129804,
+      "volume": 149.78892104291822,
       "volume_symbol": "ETH",
       "sales": 1563,
       "num_owners": 979,
@@ -36,9 +36,9 @@
   },
   "listingsAll": {
     "status": 200,
-    "ms": 670,
+    "ms": 791,
     "error": null,
-    "rateLimitRemaining": "119",
+    "rateLimitRemaining": "598",
     "count": 100,
     "hasNext": true,
     "samples": [
@@ -67,9 +67,9 @@
   },
   "listingsBest": {
     "status": 200,
-    "ms": 757,
+    "ms": 723,
     "error": null,
-    "rateLimitRemaining": "599",
+    "rateLimitRemaining": "597",
     "count": 100,
     "hasNext": true,
     "samples": [
@@ -98,9 +98,9 @@
   },
   "offers": {
     "status": 200,
-    "ms": 744,
+    "ms": 773,
     "error": null,
-    "rateLimitRemaining": "598",
+    "rateLimitRemaining": "596",
     "count": 50,
     "hasNext": true,
     "samples": [
@@ -123,9 +123,9 @@
   },
   "saleEvents": {
     "status": 200,
-    "ms": 659,
+    "ms": 706,
     "error": null,
-    "rateLimitRemaining": "112",
+    "rateLimitRemaining": "114",
     "count": 50,
     "hasNext": true,
     "samples": [
