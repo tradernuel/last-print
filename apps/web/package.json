@@ -6,7 +6,7 @@
   "scripts": {
     "data": "node --experimental-strip-types ../../scripts/build-web-data.ts",
     "dev": "npm run data && vite",
-    "build": "npm run data && tsc --noEmit && vite build",
+    "build": "npm run data && tsc --noEmit && vite build && node -e \"const f=require('fs');f.rmSync('../../dist',{recursive:true,force:true});f.cpSync('dist','../../dist',{recursive:true})\"",
     "preview": "vite preview"
   },
   "dependencies": {

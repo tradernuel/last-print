@@ -1,0 +1,4 @@
+{
+  "outputDirectory": "dist",
+  "rewrites": [{ "source": "/((?!data/|art/|assets/).*)", "destination": "/index.html" }]
+}
