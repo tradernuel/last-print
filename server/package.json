@@ -1,0 +1,20 @@
+{
+  "name": "@last-print/server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=../.env --experimental-strip-types --disable-warning=ExperimentalWarning src/main.ts",
+    "wallet:new": "node --env-file-if-exists=../.env --experimental-strip-types --disable-warning=ExperimentalWarning scripts/wallet-new.ts",
+    "deploy": "node --env-file-if-exists=../.env --experimental-strip-types --disable-warning=ExperimentalWarning scripts/deploy.ts",
+    "import:history": "node --env-file-if-exists=../.env --experimental-strip-types --disable-warning=ExperimentalWarning scripts/import-history.ts",
+    "status": "node --env-file-if-exists=../.env --experimental-strip-types --disable-warning=ExperimentalWarning scripts/status.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "viem": "2.21.54"
+  },
+  "devDependencies": {
+    "vitest": "2.1.8"
+  }
+}

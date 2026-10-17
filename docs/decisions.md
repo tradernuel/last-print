@@ -29,3 +29,11 @@ Choices made where the build spec was silent or had to change. Each keeps the pr
 **D13. "Price" means what the buyer paid.** Price = seller proceeds + fees, per token. Seller proceeds are stored separately. When a seller accepts an offer directly, the seller receives the offer amount and pays the fees from it, so price = the offer amount.
 
 **D14. OpenSea's event list is the cross-check, not its stats number.** Every sale we detect matches an OpenSea sale event by tx, token and price. OpenSea's stats endpoint reports a lower total, so it isn't used as the check.
+
+**D15. One server process and SQLite.** The indexer, listener, engine, prover, daily job and API run as loops in one Node process with one SQLite file (WAL), backed up nightly. On a 1 GB server this has fewer moving parts than separate processes and Postgres; the loops are isolated so one failing doesn't stop the others, and `/api/health` reports each.
+
+**D16. The server makes its own wallet.** The key is generated on the server and stored only in its `.env` (mode 600). It never passes through chat, GitHub or a laptop.
+
+**D17. $CHOG Aura waits for A7.** Pulls don't get the $CHOG Aura foil until its threshold is frozen from real balances; every other foil is live.
+
+**D18. Self-sale check, first version.** A sale where buyer and seller are the same wallet closes the edition without a crown. The funding-link and signed-in-player checks (D4) come with wallet sign-in.
