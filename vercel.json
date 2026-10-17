@@ -1,6 +1,6 @@
 {
   "installCommand": "npm ci",
   "buildCommand": "npm run build -w @last-print/web",
-  "outputDirectory": "apps/web/dist",
+  "outputDirectory": "dist",
   "rewrites": [{ "source": "/((?!data/|art/|assets/).*)", "destination": "/index.html" }]
 }
