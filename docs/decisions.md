@@ -37,3 +37,5 @@ Choices made where the build spec was silent or had to change. Each keeps the pr
 **D17. $CHOG Aura waits for A7.** Pulls don't get the $CHOG Aura foil until its threshold is frozen from real balances; every other foil is live.
 
 **D18. Self-sale check, first version.** A sale where buyer and seller are the same wallet closes the edition without a crown. The funding-link and signed-in-player checks (D4) come with wallet sign-in.
+
+**D19. The server runs on Render or any Linux box.** On Render (`render.yaml`) the wallet key is generated once on the persistent disk (`DATA_DIR/server-key`, mode 600), the history imports on first boot, and the PrintBook address is stored in the database by `npm run deploy`. On a plain Linux server, `server/setup.sh` does the same with a `.env` file.

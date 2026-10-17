@@ -10,7 +10,7 @@ const addr = privateKeyToAccount(env.privateKey()).address;
 const [bal, head] = await Promise.all([publicClient.getBalance({ address: addr }), publicClient.getBlockNumber()]);
 const tail = getKv(db, "tail_block");
 console.log({
-  wallet: addr, balanceMon: formatEther(bal), printBook: process.env.PRINTBOOK_ADDRESS ?? "not deployed", writesEnabled: env.writesEnabled,
+  wallet: addr, balanceMon: formatEther(bal), printBook: process.env.PRINTBOOK_ADDRESS ?? getKv(db, "printbook_address") ?? "not deployed", writesEnabled: env.writesEnabled,
   chainHead: head.toString(), tailBlock: tail, lagBlocks: tail ? (head - BigInt(tail)).toString() : null,
   seeds: db.prepare("SELECT day, commit_tx IS NOT NULL AS committed, reveal_tx IS NOT NULL AS revealed FROM seeds ORDER BY day DESC LIMIT 3").all(),
   lastRoot: db.prepare("SELECT root, count, block FROM roots ORDER BY created_ms DESC LIMIT 1").get() ?? null,

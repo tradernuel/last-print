@@ -125,7 +125,7 @@ export function startApi(db: DB) {
       }
       if (path === "/odds") {
         const seeds = db.prepare("SELECT day, commitment, commit_tx, reveal_tx, CASE WHEN reveal_tx IS NOT NULL THEN seed END AS seed FROM seeds ORDER BY day DESC LIMIT 30").all();
-        return send(res, 200, { odds: CONFIG.odds, printBook: env.printBook(), seeds });
+        return send(res, 200, { odds: CONFIG.odds, printBook: process.env.PRINTBOOK_ADDRESS ?? null, seeds });
       }
       if (path === "/health") return send(res, 200, { health, writesEnabled: env.writesEnabled });
       if (path === "/stream") {
@@ -141,6 +141,6 @@ export function startApi(db: DB) {
       return fail(res, 500, "SERVER_ERROR", "Something went wrong on our side.");
     }
   });
-  server.listen(env.port, "127.0.0.1", () => log.info("api listening", { port: env.port }));
+  server.listen(env.port, env.host, () => log.info("api listening", { host: env.host, port: env.port }));
   return server;
 }
