@@ -1,162 +1,194 @@
 {
   "Deep Aqua": {
-    "hex": "#7c44b4",
-    "agreement": 0.09,
-    "samples": 46
+    "hex": "#54e2eb",
+    "agreement": 0.98,
+    "samples": 46,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Sunlight": {
-    "hex": "#f0d498",
-    "agreement": 0.35,
-    "samples": 130
+    "hex": "#ecd295",
+    "agreement": 0.97,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Rosie": {
-    "hex": "#f0a0c4",
-    "agreement": 0.46,
-    "samples": 127
+    "hex": "#f1a0c3",
+    "agreement": 0.97,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Sky Blue": {
-    "hex": "#90d4f0",
-    "agreement": 0.4,
-    "samples": 85
+    "hex": "#92d5f1",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Mon": {
-    "hex": "#94a4f0",
-    "agreement": 0.42,
-    "samples": 131
+    "hex": "#94a4f1",
+    "agreement": 0.98,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Aqua Mint": {
-    "hex": "#90f0d0",
-    "agreement": 0.55,
-    "samples": 69
+    "hex": "#91f1d1",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Coral Pink": {
-    "hex": "#f09898",
-    "agreement": 0.39,
-    "samples": 121
+    "hex": "#f19898",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Light Magenta": {
-    "hex": "#f090f0",
-    "agreement": 0.26,
-    "samples": 92
+    "hex": "#f192f0",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Rosy Pink": {
-    "hex": "#b46818",
-    "agreement": 0.13,
-    "samples": 47
+    "hex": "#ea5694",
+    "agreement": 0.85,
+    "samples": 47,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Lemon": {
-    "hex": "#f0f09c",
-    "agreement": 0.2,
-    "samples": 142
+    "hex": "#f2f09a",
+    "agreement": 0.97,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Mint": {
-    "hex": "#a0f0b4",
-    "agreement": 0.21,
-    "samples": 114
+    "hex": "#9cf1b3",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Fresh Green": {
-    "hex": "#a4f090",
-    "agreement": 0.67,
-    "samples": 85
+    "hex": "#a4f191",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Light Purple": {
-    "hex": "#e4a0f0",
-    "agreement": 0.25,
-    "samples": 183
+    "hex": "#e49eec",
+    "agreement": 0.72,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Aqua": {
-    "hex": "#98e8f0",
-    "agreement": 0.18,
-    "samples": 133
+    "hex": "#95e9f2",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Soft Lavender": {
-    "hex": "#a490f0",
-    "agreement": 0.6,
-    "samples": 86
+    "hex": "#a191ed",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Lemon Yellow": {
-    "hex": "#f0ec90",
-    "agreement": 0.2,
-    "samples": 129
+    "hex": "#f2ed92",
+    "agreement": 0.72,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Peach Pink": {
-    "hex": "#f0a090",
-    "agreement": 0.72,
-    "samples": 95
+    "hex": "#f19f91",
+    "agreement": 1.0,
+    "samples": 60,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Lime Green": {
-    "hex": "#a81c80",
-    "agreement": 0.09,
-    "samples": 46
+    "hex": "#53f17d",
+    "agreement": 0.98,
+    "samples": 46,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Radioactive": {
-    "hex": "#44d8f0",
-    "agreement": 0.27,
-    "samples": 30
+    "hex": "#292341",
+    "agreement": 0.93,
+    "samples": 30,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Deep Blue": {
-    "hex": "#b46818",
-    "agreement": 0.13,
-    "samples": 45
+    "hex": "#546eeb",
+    "agreement": 0.98,
+    "samples": 45,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Noble Blue": {
-    "hex": "#4c70d4",
-    "agreement": 1,
-    "samples": 1
+    "hex": "#2f4db0",
+    "agreement": null,
+    "samples": 1,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Red Sky": {
-    "hex": "#d0b4bc",
-    "agreement": 0.33,
-    "samples": 3
+    "hex": "#c63131",
+    "agreement": 1.0,
+    "samples": 3,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Afternoon Orange": {
-    "hex": "#7464a4",
-    "agreement": 1,
-    "samples": 1
+    "hex": "#f2994a",
+    "agreement": null,
+    "samples": 1,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Deep Purple": {
-    "hex": "#f0f0f0",
-    "agreement": 0.33,
-    "samples": 3
+    "hex": "#733fe4",
+    "agreement": 1.0,
+    "samples": 3,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Gold": {
-    "hex": "#0ce4f0",
-    "agreement": 0.33,
-    "samples": 3
+    "hex": "#d0b43e",
+    "agreement": 1.0,
+    "samples": 3,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Royal Blue": {
-    "hex": "#b8f030",
-    "agreement": 0.5,
-    "samples": 2
+    "hex": "#4379e7",
+    "agreement": 1.0,
+    "samples": 2,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Bright Yellow": {
-    "hex": "#e8b47c",
-    "agreement": 0.5,
-    "samples": 2
+    "hex": "#f7e046",
+    "agreement": null,
+    "samples": 2,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Magenta": {
-    "hex": "#b8f430",
-    "agreement": 0.33,
-    "samples": 3
+    "hex": "#dd4db4",
+    "agreement": 1.0,
+    "samples": 3,
+    "method": "most common non-outline edge colour across tokens"
   },
   "Blood Red": {
-    "hex": "#b46818",
-    "agreement": 1,
-    "samples": 1
+    "hex": "#a3141c",
+    "agreement": null,
+    "samples": 1,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Aqua Blue": {
-    "hex": "#f0f4f0",
-    "agreement": 1,
-    "samples": 1
+    "hex": "#3fc1e0",
+    "agreement": null,
+    "samples": 1,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Rose Pink": {
-    "hex": "#f0306c",
-    "agreement": 1,
-    "samples": 1
+    "hex": "#f28ab0",
+    "agreement": null,
+    "samples": 1,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   },
   "Supreme Purple": {
-    "hex": "#3838ec",
-    "agreement": 0.5,
-    "samples": 2
+    "hex": "#6b2fb3",
+    "agreement": null,
+    "samples": 2,
+    "method": "hand-picked from the name (1-2 Chogs, too few to sample; spec A8 fallback)"
   }
 }
