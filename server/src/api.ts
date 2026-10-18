@@ -4,7 +4,7 @@ import type { Hex } from "viem";
 import { CONFIG } from "../../packages/core/src/index.ts";
 import { env } from "./config.ts";
 import type { DB } from "./db.ts";
-import { CATALOG, NAMES, PackError, openPackFor } from "./game.ts";
+import { CATALOG, NAMES, PackError, duelToday, openPackFor, packsAllowed, packsOpened, playDuel, dayOf } from "./game.ts";
 import { errMsg, log } from "./log.ts";
 import { bus, currentListings, health } from "./workers.ts";
 
@@ -69,17 +69,39 @@ export function startApi(db: DB) {
           throw e;
         }
       }
+      if (req.method === "POST" && path === "/duel") {
+        if (!isId(player)) return fail(res, 400, "INVALID_INPUT", "Missing player id.");
+        let body = "";
+        for await (const chunk of req) { body += chunk; if (body.length > 4000) return fail(res, 413, "INVALID_INPUT", "Too large."); }
+        const ids = (JSON.parse(body || "{}").cardIds ?? []) as unknown[];
+        if (!Array.isArray(ids) || !ids.every(isId)) return fail(res, 400, "INVALID_INPUT", "Pick 3 of your cards.");
+        try { return send(res, 200, { result: playDuel(db, player, ids as Hex[], now, currentListings()) }); }
+        catch (e) {
+          if (e instanceof PackError) return fail(res, e.code === "SEED_COMMIT_FAIL" ? 503 : 409, e.code, e.message);
+          return fail(res, 400, "INVALID_INPUT", errMsg(e));
+        }
+      }
       if (req.method !== "GET") return fail(res, 405, "INVALID_INPUT", "Method not allowed.");
+      if (path === "/duel/today") {
+        try {
+          const t = duelToday(db, isId(player) ? player : null, now, currentListings());
+          return send(res, 200, { day: t.day, roundStats: t.roundStats, boss: t.boss, played: t.played });
+        } catch (e) {
+          if (e instanceof PackError) return fail(res, 503, e.code, e.message);
+          throw e;
+        }
+      }
 
       if (path === "/me") {
         if (!isId(player)) return fail(res, 400, "INVALID_INPUT", "Missing player id.");
         const p = db.prepare("SELECT streak, last_day FROM players WHERE id = ?").get(player) as any;
         if (!p) return fail(res, 404, "UNKNOWN_PLAYER", "Unknown player.");
         const today = Number(new Date(now).toISOString().slice(0, 10).replaceAll("-", ""));
-        const opened = Boolean(db.prepare("SELECT 1 FROM packs WHERE player_id = ? AND day = ?").get(player, today));
+        const opened = packsOpened(db, player, today) >= packsAllowed(db, player, today);
+        const bonusAvailable = packsAllowed(db, player, today) > packsOpened(db, player, today) && packsOpened(db, player, today) >= 1;
         const counts = db.prepare("SELECT COUNT(*) AS cards, COUNT(DISTINCT token_id) AS chogs FROM cards WHERE player_id = ? AND superseded_by IS NULL").get(player) as any;
         const lastPrints = (db.prepare("SELECT COUNT(*) AS n FROM edition_closes WHERE player_id = ?").get(player) as any).n;
-        return send(res, 200, { streak: p.streak, openedToday: opened, ...counts, lastPrints });
+        return send(res, 200, { streak: p.streak, openedToday: opened, bonusAvailable, ...counts, lastPrints });
       }
       if (path === "/collection") {
         if (!isId(player)) return fail(res, 400, "INVALID_INPUT", "Missing player id.");
@@ -128,6 +150,21 @@ export function startApi(db: DB) {
         return send(res, 200, { odds: CONFIG.odds, printBook: process.env.PRINTBOOK_ADDRESS ?? null, seeds });
       }
       if (path === "/health") return send(res, 200, { health, writesEnabled: env.writesEnabled });
+      if (path === "/stats") {
+        // Usage numbers for the submission (spec §40): counts only, nothing personal.
+        const one = (sql: string, ...a: unknown[]) => Object.values(db.prepare(sql).get(...(a as never[])) as object)[0];
+        const firstPack = one("SELECT MIN(opened_ms) FROM packs") as number | null;
+        return send(res, 200, { stats: {
+          liveSince: firstPack ? new Date(firstPack).toISOString() : null,
+          players: one("SELECT COUNT(DISTINCT player_id) FROM packs"), packsOpened: one("SELECT COUNT(*) FROM packs"),
+          cardsPulled: one("SELECT COUNT(*) FROM cards WHERE superseded_by IS NULL"), hotCardsPulled: one("SELECT COUNT(*) FROM cards WHERE slot = 'hot' AND superseded_by IS NULL"),
+          duelsPlayed: one("SELECT COUNT(*) FROM duels"), duelsWon: one("SELECT COUNT(*) FROM duels WHERE won = 1"),
+          rootsPosted: one("SELECT COUNT(*) FROM roots"), seedsCommitted: one("SELECT COUNT(*) FROM seeds WHERE commit_block IS NOT NULL"),
+          salesSinceLaunch: one("SELECT COUNT(*) FROM edition_closes WHERE outcome != 'PRE_GAME'"),
+          lastPrintsCrowned: one("SELECT COUNT(*) FROM edition_closes WHERE outcome = 'CROWNED'"), editionsUnclaimed: one("SELECT COUNT(*) FROM edition_closes WHERE outcome = 'UNCLAIMED'"),
+          returningPlayers: one("SELECT COUNT(*) FROM (SELECT player_id FROM packs GROUP BY player_id HAVING COUNT(DISTINCT day) >= 2)"),
+        } });
+      }
       if (path === "/stream") {
         res.writeHead(200, { "content-type": "text/event-stream", "cache-control": "no-store", connection: "keep-alive" });
         res.write(": connected\n\n");

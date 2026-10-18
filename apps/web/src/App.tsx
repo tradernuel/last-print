@@ -5,6 +5,8 @@ import { Chog } from "./pages/Chog";
 import { About, NotFound } from "./pages/Info";
 import { Pack } from "./pages/Pack";
 import { CardPage, Collection, LastPrints, Odds } from "./pages/Mine";
+import { Duel } from "./pages/Duel";
+import { Album, Inbox } from "./pages/Album";
 
 export function App() {
   return (
@@ -15,8 +17,8 @@ export function App() {
         <nav aria-label="Main">
           <NavLink to="/pack">Pack</NavLink>
           <NavLink to="/wall">Wall</NavLink>
+          <NavLink to="/duel">Duel</NavLink>
           <NavLink to="/collection">My cards</NavLink>
-          <NavLink to="/how">Rules</NavLink>
         </nav>
       </header>
       <main id="main">
@@ -26,6 +28,9 @@ export function App() {
           <Route path="/wall" element={<Wall />} />
           <Route path="/chog/:id" element={<Chog />} />
           <Route path="/collection" element={<Collection />} />
+          <Route path="/duel" element={<Duel />} />
+          <Route path="/album" element={<Album />} />
+          <Route path="/inbox" element={<Inbox />} />
           <Route path="/card/:id" element={<CardPage />} />
           <Route path="/last-prints" element={<LastPrints />} />
           <Route path="/odds" element={<Odds />} />
@@ -40,6 +45,8 @@ export function App() {
           <NavLink to="/how">How it works</NavLink>
           <NavLink to="/odds">Odds and fairness</NavLink>
           <NavLink to="/last-prints">Hall of Last Prints</NavLink>
+          <NavLink to="/album">Albums</NavLink>
+          <NavLink to="/inbox">Alerts</NavLink>
         </nav>
       </footer>
     </>

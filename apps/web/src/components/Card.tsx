@@ -30,7 +30,7 @@ export function Card({ id, name, title, tier, edition, bgHex, size = "lg", stamp
         <span className="card__name">{title ?? number}</span>
         <span className="card__meta">
           <span className="card__tier">{title ? `${number}, ${tier}` : tier}</span>
-          <span className="card__edition">Ed. {edition}{printNo ? <> #{printNo}</> : null}</span>
+          {edition > 0 && <span className="card__edition">Ed. {edition}{printNo ? <> #{printNo}</> : null}</span>}
         </span>
         {foils.length > 0 && <span className="card__foils">{foils.map((f) => FOIL_LABEL[f]).join(", ")}</span>}
         {lastPrint != null && <span className="card__lp">Last Print, Edition {lastPrint}</span>}

@@ -16,8 +16,9 @@ export function Pack() {
   const [hotMissing, setHotMissing] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
   const [opened, setOpened] = useState<boolean | null>(null);
+  const [bonus, setBonus] = useState(false);
 
-  useEffect(() => { api.me().then((m) => setOpened(m.openedToday), () => setOpened(false)); }, []);
+  useEffect(() => { api.me().then((m) => { setOpened(m.openedToday); setBonus(m.bonusAvailable); }, () => setOpened(false)); }, []);
   useEffect(() => {
     if (state !== "open" || shown >= cards.length) return;
     const t = setTimeout(() => setShown((n) => n + 1), reduce() ? 0 : shown === 0 ? 150 : 900);
@@ -39,9 +40,9 @@ export function Pack() {
         <>
           <p className="lede">Five real Chogs, free, once a day. One of them is listed for sale right now.</p>
           {opened ? (
-            <p>You've opened today's pack. A new one arrives at 00:00 UTC. <Link to="/collection">See your cards</Link>.</p>
+            <p>You've opened today's pack. <Link to="/duel">Beat today's Market Boss</Link> for a bonus pack, or come back at 00:00 UTC. <Link to="/collection">See your cards</Link>.</p>
           ) : (
-            <button className="btn btn--big" onClick={open}>Open today's pack</button>
+            <button className="btn btn--big" onClick={open}>{bonus ? "Open your bonus pack" : "Open today's pack"}</button>
           )}
           <p className="muted">Packs are drawn from a seed locked on Monad before any pack opens. <Link to="/odds">Odds and fairness</Link>.</p>
         </>
@@ -76,7 +77,7 @@ export function Pack() {
               <p>Every card above is a real Chog. Each pull was fingerprinted on Monad within seconds, so if one of these Chogs sells and yours was the last copy pulled, it becomes a one-of-one Last Print.</p>
               <div className="hero__actions">
                 <Link className="btn" to="/collection">See your cards</Link>
-                <Link className="btn btn--quiet" to="/wall">Watch the Edition Wall</Link>
+                <Link className="btn btn--quiet" to="/duel">Duel the Market Boss</Link>
               </div>
             </div>
           )}

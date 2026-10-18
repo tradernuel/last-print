@@ -47,7 +47,9 @@ const withPlayer = async (): Promise<RequestInit> => ({ headers: { "x-player": a
 
 export const api = {
   openPack: async () => call<{ day: number; cards: PulledCard[]; hotMissing: boolean }>("/pack/open", { method: "POST", ...(await withPlayer()) }),
-  me: async () => call<{ streak: number; openedToday: boolean; cards: number; chogs: number; lastPrints: number }>("/me", await withPlayer()),
+  me: async () => call<{ streak: number; openedToday: boolean; bonusAvailable: boolean; cards: number; chogs: number; lastPrints: number }>("/me", await withPlayer()),
+  duelToday: async () => call<DuelToday>("/duel/today", await withPlayer()),
+  playDuel: async (cardIds: string[]) => call<{ result: DuelResult }>("/duel", { method: "POST", body: JSON.stringify({ cardIds }), ...(await withPlayer()) }),
   collection: async () => call<{ cards: OwnedCard[] }>("/collection", await withPlayer()),
   alerts: async () => call<{ alerts: { id: number; kind: string; tokenId: number; edition: number; saleTx: string; at: string; read: boolean }[] }>("/alerts", await withPlayer()),
   card: (id: string) => call<{ card: OwnedCard & { player: string }; leaf: string; root: { root: string; tx: string; block: number } | null }>(`/card/${id}`),
@@ -68,4 +70,14 @@ export function onLiveSale(fn: (s: { tokenId: number; name: string; edition: num
 
 export const FOIL_LABEL: Record<Foil, string> = {
   ORIGINAL: "Held since mint", LONG_HOLD: "Long hold", FOR_SALE: "For sale", FRESH: "New home", CHOG_AURA: "$CHOG Aura", LEGEND: "Legend",
+};
+
+export type StatName = "loyalty" | "journey" | "fame" | "value";
+export interface Stats { loyalty: number; journey: number; fame: number; value: number }
+export interface BossCard { tokenId: number; name: string; tier: PulledCard["tier"]; stats: Stats; sale: { tx: string; time: string; price: number | null } }
+export interface DuelResult { winner: "PLAYER" | "BOSS" | "DRAW"; rounds: { stat: StatName; result: "PLAYER" | "BOSS" | "VOID"; player: { tokenId: number; name: string; tier: string; stats: Stats }; boss: BossCard }[] }
+export interface DuelToday { day: number; roundStats: StatName[]; boss: BossCard[]; played: DuelResult | null }
+export const STAT_LABEL: Record<StatName, string> = { loyalty: "Loyalty", journey: "Journey", fame: "Fame", value: "Value" };
+export const STAT_HELP: Record<StatName, string> = {
+  loyalty: "how long its owner has held it", journey: "how many owners it has had", fame: "how many times it has sold", value: "its last sale price against today's floor",
 };

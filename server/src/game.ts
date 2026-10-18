@@ -2,7 +2,8 @@ import { randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { keccak256, toHex, zeroHash, type Hex } from "viem";
 import {
-  buildHotSnapshot, buildTree, computeFoils, openPack, proofFor, pullLeaf, CONFIG,
+  buildHotSnapshot, buildTree, computeFoils, computeStats, openPack, planDuel, proofFor, pullLeaf, runDuel, CONFIG,
+  type DuelCard, type Stats,
   type CatalogEntry, type Foil, type HotSnapshot, type Listing, type Tier,
 } from "../../packages/core/src/index.ts";
 import { ROOT } from "./config.ts";
@@ -73,18 +74,30 @@ export class PackError extends Error {
   constructor(code: PackError["code"], msg: string) { super(msg); this.code = code; }
 }
 
-export function openPackFor(db: DB, playerId: Hex, nowMs: number, listings: Listing[] | null): { day: number; cards: PulledCard[]; hotMissing: boolean } {
+/** Packs a player may open today: the free daily pack (index 0), plus one bonus pack (index 1) for winning today's Duel. */
+export function packsAllowed(db: DB, playerId: Hex, day: number): number {
+  const won = db.prepare("SELECT won FROM duels WHERE player_id = ? AND day = ?").get(playerId, day) as { won: number } | undefined;
+  return 1 + (won?.won ? 1 : 0);
+}
+export function packsOpened(db: DB, playerId: Hex, day: number): number {
+  return (db.prepare("SELECT COUNT(*) AS n FROM packs WHERE player_id = ? AND day = ?").get(playerId, day) as { n: number }).n;
+}
+
+export function openPackFor(db: DB, playerId: Hex, nowMs: number, listings: Listing[] | null): { day: number; packIndex: number; cards: PulledCard[]; hotMissing: boolean } {
   const day = dayOf(nowMs);
   if (!db.prepare("SELECT 1 FROM players WHERE id = ?").get(playerId)) throw new PackError("UNKNOWN_PLAYER", "Unknown player.");
   const seedRow = db.prepare("SELECT seed, commit_block FROM seeds WHERE day = ?").get(day) as { seed: Hex; commit_block: number | null } | undefined;
   if (seedRow?.commit_block == null) throw new PackError("SEED_COMMIT_FAIL", "Today's packs open in a moment.");
-  if (db.prepare("SELECT 1 FROM packs WHERE player_id = ? AND day = ? AND pack_index = 0").get(playerId, day)) throw new PackError("ALREADY_OPENED", "You've opened today's pack. A new one arrives at 00:00 UTC.");
+  const packIndex = packsOpened(db, playerId, day);
+  if (packIndex >= packsAllowed(db, playerId, day)) throw new PackError("ALREADY_OPENED", packIndex >= 2
+    ? "You've opened today's packs. New ones arrive at 00:00 UTC."
+    : "You've opened today's pack. Win today's Duel for a bonus pack, or come back at 00:00 UTC.");
 
   let hot: HotSnapshot | null = null;
   if (listings && listings.length) hot = buildHotSnapshot(listings, hotCapWei(db, nowMs), nowMs);
   const owned = (db.prepare(`SELECT DISTINCT token_id FROM cards WHERE player_id = ?`).all(playerId) as { token_id: number }[]).map((r) => r.token_id);
   const ownedBg = [...new Set(owned.map((id) => CATALOG.find((c) => c.tokenId === id)!.background).filter((b): b is string => b !== null))];
-  const pack = openPack({ seed: seedRow.seed, playerId, packIndex: 0, catalog: CATALOG, ownedBackgrounds: ownedBg, hot });
+  const pack = openPack({ seed: seedRow.seed, playerId, packIndex, catalog: CATALOG, ownedBackgrounds: ownedBg, hot });
   const listed = new Set((listings ?? []).map((l) => l.tokenId));
   const snapshotHash = (hot?.hash ?? zeroHash) as Hex;
 
@@ -93,14 +106,14 @@ export function openPackFor(db: DB, playerId: Hex, nowMs: number, listings: List
       .run(hot.hash, hot.takenAtMs, hot.capWei.toString(), JSON.stringify(hot.listings.map((l) => [l.tokenId, l.priceWei.toString()])));
     const cards = pack.slots.map((s, i) => {
       const pulledMs = nowMs + i; // distinct, ordered pull times within one pack
-      return recordPull(db, { playerId, tokenId: s.tokenId, slot: s.slot, pulledMs, day, packIndex: 0,
+      return recordPull(db, { playerId, tokenId: s.tokenId, slot: s.slot, pulledMs, day, packIndex,
         foils: foilsFor(db, s.tokenId, pulledMs, listed.has(s.tokenId)), snapshotHash: s.slot === "hot" ? snapshotHash : zeroHash,
         hotPriceWei: s.slot === "hot" ? hot!.listings.find((l) => l.tokenId === s.tokenId)!.priceWei : null });
     });
-    db.prepare("INSERT INTO packs (player_id, day, pack_index, opened_ms, slots, hot_snapshot) VALUES (?, ?, 0, ?, ?, ?)")
-      .run(playerId, day, nowMs, JSON.stringify(pack.slots), hot?.hash ?? null);
-    bumpStreak(db, playerId, day);
-    return { day, cards, hotMissing: pack.hotMissing };
+    db.prepare("INSERT INTO packs (player_id, day, pack_index, opened_ms, slots, hot_snapshot) VALUES (?, ?, ?, ?, ?, ?)")
+      .run(playerId, day, packIndex, nowMs, JSON.stringify(pack.slots), hot?.hash ?? null);
+    if (packIndex === 0) bumpStreak(db, playerId, day);
+    return { day, packIndex, cards, hotMissing: pack.hotMissing };
   });
 }
 
@@ -191,3 +204,65 @@ export function closeEdition(db: DB, s: SaleRow): CloseResult {
 }
 
 export const seedCommitmentOf = (seed: Hex) => keccak256(seed);
+
+// ---------- stats and the Duel vs the Market Boss (spec §6.3, §11.1, decisions D5) ----------
+/** Floor: cheapest live MON listing; without listings, the 25th percentile of the last 14 days' sales. */
+export function floorWei(db: DB, listings: Listing[] | null, nowMs: number): bigint {
+  if (listings && listings.length) return listings.reduce((m, l) => (l.priceWei < m ? l.priceWei : m), listings[0]!.priceWei);
+  const rows = db.prepare("SELECT price FROM events WHERE class = 'SALE' AND time_ms >= ? AND price IS NOT NULL").all(nowMs - 14 * 86_400_000) as { price: string }[];
+  if (rows.length === 0) throw new Error("no floor: no listings and no recent sales");
+  const sorted = rows.map((r) => Number(r.price)).sort((a, b) => a - b);
+  return BigInt(Math.round(sorted[Math.floor(0.25 * (sorted.length - 1))]!)) * 10n ** 18n;
+}
+
+export function statsFor(db: DB, tokenId: number, nowMs: number, floor: bigint): Stats {
+  const evs = db.prepare("SELECT time_ms, from_addr, to_addr, class, price FROM events WHERE token_id = ? ORDER BY block, tx_index, log_index").all(tokenId) as { time_ms: number; from_addr: string; to_addr: string; class: string; price: string | null }[];
+  const owners = new Set(evs.map((e) => e.to_addr.toLowerCase()));
+  const lastChange = [...evs].reverse().find((e) => e.from_addr.toLowerCase() !== e.to_addr.toLowerCase());
+  const sales = evs.filter((e) => e.class === "SALE");
+  const last = [...sales].reverse().find((e) => e.price !== null);
+  return computeStats({
+    holdDays: lastChange ? Math.floor((nowMs - lastChange.time_ms) / 86_400_000) : 0,
+    distinctOwners: Math.max(1, owners.size), salesCount: sales.length,
+    lastSaleWei: last ? BigInt(Math.round(Number(last.price))) * 10n ** 18n : null, floorWei: floor,
+    tier: CATALOG.find((c) => c.tokenId === tokenId)!.tier,
+  });
+}
+
+/** Boss deck: the 3 Chogs sold most recently before today with the highest Fame + Value (yesterday's sales first). */
+export function bossDeck(db: DB, nowMs: number, floor: bigint) {
+  const dayStart = nowMs - (nowMs % 86_400_000);
+  const rows = db.prepare(`SELECT token_id, MAX(time_ms) AS t, tx, price FROM events WHERE class = 'SALE' AND time_ms < ? AND time_ms >= ?
+    GROUP BY token_id ORDER BY t DESC LIMIT 40`).all(dayStart, dayStart - 3 * 86_400_000) as { token_id: number; t: number; tx: string; price: string | null }[];
+  if (rows.length < 3) throw new Error("not enough recent sales to build the Market Boss deck");
+  const yesterday = rows.filter((r) => r.t >= dayStart - 86_400_000);
+  const pool = yesterday.length >= 3 ? yesterday : rows;
+  return pool.map((r) => ({ tokenId: r.token_id, name: NAMES.get(r.token_id)!, tier: CATALOG.find((c) => c.tokenId === r.token_id)!.tier,
+      stats: statsFor(db, r.token_id, nowMs, floor), sale: { tx: r.tx, time: new Date(r.t).toISOString(), price: r.price == null ? null : Math.round(Number(r.price)) } }))
+    .sort((a, b) => (b.stats.fame + b.stats.value) - (a.stats.fame + a.stats.value) || a.tokenId - b.tokenId).slice(0, 3);
+}
+
+export function duelToday(db: DB, playerId: Hex | null, nowMs: number, listings: Listing[] | null) {
+  const day = dayOf(nowMs);
+  const seed = db.prepare("SELECT seed, commit_block FROM seeds WHERE day = ?").get(day) as { seed: Hex; commit_block: number | null } | undefined;
+  if (seed?.commit_block == null) throw new PackError("SEED_COMMIT_FAIL", "Today's Duel opens in a moment.");
+  const floor = floorWei(db, listings, nowMs);
+  const plan = planDuel(seed.seed, String(day));
+  const played = playerId ? db.prepare("SELECT result, won FROM duels WHERE player_id = ? AND day = ?").get(playerId, day) as { result: string; won: number } | undefined : undefined;
+  return { day, floor, boss: bossDeck(db, nowMs, floor), roundStats: plan.roundStats, plan, played: played ? JSON.parse(played.result) : null };
+}
+
+export function playDuel(db: DB, playerId: Hex, cardIds: Hex[], nowMs: number, listings: Listing[] | null) {
+  const t = duelToday(db, playerId, nowMs, listings);
+  if (t.played) throw new PackError("ALREADY_OPENED", "You've played today's Duel. A new Boss arrives at 00:00 UTC.");
+  if (cardIds.length !== 3 || new Set(cardIds).size !== 3) throw new Error("pick 3 different cards");
+  const mine = cardIds.map((id) => db.prepare("SELECT token_id FROM cards WHERE card_id = ? AND player_id = ? AND superseded_by IS NULL").get(id, playerId) as { token_id: number } | undefined);
+  if (mine.some((m) => !m)) throw new Error("you can only play your own cards");
+  const picks: DuelCard[] = mine.map((m) => ({ tokenId: m!.token_id, tier: CATALOG.find((c) => c.tokenId === m!.token_id)!.tier, stats: statsFor(db, m!.token_id, nowMs, t.floor) }));
+  if (new Set(picks.map((p) => p.tokenId)).size !== 3) throw new Error("pick 3 different Chogs");
+  const r = runDuel(t.plan, t.boss, picks);
+  const result = { winner: r.winner, rounds: r.rounds.map((x, i) => ({ stat: x.stat, result: x.result, player: { ...picks[i]!, name: NAMES.get(picks[i]!.tokenId) }, boss: t.boss[t.plan.bossOrder[i]!]! })) };
+  db.prepare("INSERT INTO duels (player_id, day, picks, result, won, created_ms) VALUES (?, ?, ?, ?, ?, ?)")
+    .run(playerId, t.day, JSON.stringify(cardIds), JSON.stringify(result), r.winner === "PLAYER" ? 1 : 0, nowMs);
+  return result;
+}

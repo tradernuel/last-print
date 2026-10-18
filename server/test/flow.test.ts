@@ -82,5 +82,20 @@ describe.skipIf(!hasAnvil)("server flow on anvil", () => {
     expect(again.outcome).toBe("UNCLAIMED");
     const alerts = db.prepare("SELECT kind FROM alerts WHERE player_id = ?").all(player) as { kind: string }[];
     expect(alerts.map((a) => a.kind)).toContain("LAST_PRINT");
+
+    // Duel vs the Market Boss: boss deck from real recent sales, 3 distinct own Chogs, one duel a day, bonus pack on a win.
+    const today = game.duelToday(db, player, now, listings);
+    expect(today.boss).toHaveLength(3);
+    expect(today.roundStats).not.toContain("loyalty");
+    const mine = (db.prepare("SELECT card_id, token_id FROM cards WHERE player_id = ? AND superseded_by IS NULL").all(player) as { card_id: `0x${string}`; token_id: number }[]);
+    const distinct = [...new Map(mine.map((m) => [m.token_id, m.card_id])).values()].slice(0, 3);
+    const result = game.playDuel(db, player, distinct, now, listings);
+    expect(result.rounds).toHaveLength(3);
+    expect(() => game.playDuel(db, player, distinct, now, listings)).toThrow(/played today's Duel/);
+    if (result.winner === "PLAYER") {
+      expect(game.packsAllowed(db, player, day)).toBe(2);
+      expect(game.openPackFor(db, player, now + 5000, listings).packIndex).toBe(1);
+    } else expect(game.packsAllowed(db, player, day)).toBe(1);
+    expect(() => game.openPackFor(db, player, now + 9000, listings)).toThrow(/opened today's pack/);
   }, 60_000);
 });
