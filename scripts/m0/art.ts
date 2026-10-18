@@ -24,7 +24,7 @@ const errors: Record<string, number> = {};
 
 async function download(uri: string, start: number): Promise<Buffer> {
   const [cid, ...rest] = uri.slice("ipfs://".length).split("/");
-  for (let round = 0; round < 4; round++) {
+  for (let round = 0; round < 2; round++) {
     for (let k = 0; k < GATEWAYS.length; k++) {
       const url = GATEWAYS[(start + k) % GATEWAYS.length]!(cid!, rest.join("/"));
       const host = new URL(url).host.replace(cid!, "<cid>");
@@ -39,13 +39,47 @@ async function download(uri: string, start: number): Promise<Buffer> {
   throw new Error(`all gateways failed for ${uri}`);
 }
 
+// Fast source first: OpenSea's CDN copy of each token's original image (looked up by token id), then IPFS.
+const cdn = new Map<number, string>();
+if (process.env.OPENSEA_API_KEY) {
+  let next: string | null = null, pages = 0;
+  do {
+    const url: string = `https://api.opensea.io/api/v2/collection/chog-genesis/nfts?limit=200${next ? `&next=${encodeURIComponent(next)}` : ""}`;
+    const res: Response = await fetch(url, { headers: { accept: "application/json", "x-api-key": process.env.OPENSEA_API_KEY } });
+    if (!res.ok) { console.log(`OpenSea NFT list ${res.status}; using IPFS only`); break; }
+    const page: any = await res.json();
+    for (const n of page.nfts ?? []) if (n.image_url) cdn.set(Number(n.identifier), n.image_url);
+    next = page.next ?? null;
+    await sleep(400);
+  } while (next && ++pages < 30);
+  console.log(`OpenSea CDN image URLs: ${cdn.size}`);
+}
+
+async function fromCdn(tokenId: number): Promise<Buffer | null> {
+  const url = cdn.get(tokenId);
+  if (!url) return null;
+  for (let i = 0; i < 3; i++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
+      if (res.ok) return Buffer.from(await res.arrayBuffer());
+      errors[`cdn ${res.status}`] = (errors[`cdn ${res.status}`] ?? 0) + 1;
+    } catch (e) { errors[`cdn ${(e as Error).name}`] = (errors[`cdn ${(e as Error).name}`] ?? 0) + 1; }
+    await sleep(1000 * (i + 1));
+  }
+  return null;
+}
+
+// Each run stops starting new downloads after ART_BUDGET_MIN minutes and saves what it has; the next run resumes.
+const deadline = Date.now() + Number(process.env.ART_BUDGET_MIN ?? 50) * 60_000;
 const failed: number[] = [];
-await pool(chogs, 5, async (c, i) => {
+let skipped = 0;
+await pool(chogs, 10, async (c, i) => {
   const out512 = new URL(`${c.tokenId}.webp`, dir(512));
   const out256 = new URL(`${c.tokenId}.webp`, dir(256));
   if (existsSync(out512) && existsSync(out256)) return;
+  if (Date.now() > deadline) { skipped++; return; }
   try {
-    const buf = await download(c.image, i);
+    const buf = (await fromCdn(c.tokenId)) ?? (await download(c.image, i));
     await sharp(buf).resize(512, 512).webp({ quality: 82 }).toFile(out512.pathname);
     await sharp(buf).resize(256, 256).webp({ quality: 78 }).toFile(out256.pathname);
   } catch { failed.push(c.tokenId); }
@@ -73,6 +107,8 @@ const backgrounds = Object.fromEntries([...votes].map(([bg, m]) => {
   return [bg, { hex: sorted[0]![0], agreement: Number((sorted[0]![1] / total).toFixed(2)), samples: total }];
 }));
 writeJson("art/backgrounds.json", backgrounds);
-writeJson("art/summary.json", { ranAt: new Date().toISOString(), images: chogs.length - failed.length, failed: failed.length, errors });
-if (failed.length) throw new Error(`${failed.length} images still missing; run the workflow again to resume`);
+const have = chogs.filter((c) => existsSync(new URL(`${c.tokenId}.webp`, dir(512))) && existsSync(new URL(`${c.tokenId}.webp`, dir(256)))).length;
+writeJson("art/summary.json", { ranAt: new Date().toISOString(), images: have, missing: chogs.length - have, failedThisRun: failed.length, notStartedThisRun: skipped, errors });
+console.log(`art: ${have} of ${chogs.length} images mirrored`);
+if (have < chogs.length) throw new Error(`${chogs.length - have} images still missing; run the workflow again to resume (progress is saved)`);
 console.log("art done");
