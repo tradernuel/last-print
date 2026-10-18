@@ -1,0 +1,162 @@
+{
+  "Deep Aqua": {
+    "hex": "#7c44b4",
+    "agreement": 0.09,
+    "samples": 46
+  },
+  "Sunlight": {
+    "hex": "#f0d498",
+    "agreement": 0.35,
+    "samples": 130
+  },
+  "Rosie": {
+    "hex": "#f0a0c4",
+    "agreement": 0.46,
+    "samples": 127
+  },
+  "Sky Blue": {
+    "hex": "#90d4f0",
+    "agreement": 0.4,
+    "samples": 85
+  },
+  "Mon": {
+    "hex": "#94a4f0",
+    "agreement": 0.42,
+    "samples": 131
+  },
+  "Aqua Mint": {
+    "hex": "#90f0d0",
+    "agreement": 0.55,
+    "samples": 69
+  },
+  "Coral Pink": {
+    "hex": "#f09898",
+    "agreement": 0.39,
+    "samples": 121
+  },
+  "Light Magenta": {
+    "hex": "#f090f0",
+    "agreement": 0.26,
+    "samples": 92
+  },
+  "Rosy Pink": {
+    "hex": "#b46818",
+    "agreement": 0.13,
+    "samples": 47
+  },
+  "Lemon": {
+    "hex": "#f0f09c",
+    "agreement": 0.2,
+    "samples": 142
+  },
+  "Mint": {
+    "hex": "#a0f0b4",
+    "agreement": 0.21,
+    "samples": 114
+  },
+  "Fresh Green": {
+    "hex": "#a4f090",
+    "agreement": 0.67,
+    "samples": 85
+  },
+  "Light Purple": {
+    "hex": "#e4a0f0",
+    "agreement": 0.25,
+    "samples": 183
+  },
+  "Aqua": {
+    "hex": "#98e8f0",
+    "agreement": 0.18,
+    "samples": 133
+  },
+  "Soft Lavender": {
+    "hex": "#a490f0",
+    "agreement": 0.6,
+    "samples": 86
+  },
+  "Lemon Yellow": {
+    "hex": "#f0ec90",
+    "agreement": 0.2,
+    "samples": 129
+  },
+  "Peach Pink": {
+    "hex": "#f0a090",
+    "agreement": 0.72,
+    "samples": 95
+  },
+  "Lime Green": {
+    "hex": "#a81c80",
+    "agreement": 0.09,
+    "samples": 46
+  },
+  "Radioactive": {
+    "hex": "#44d8f0",
+    "agreement": 0.27,
+    "samples": 30
+  },
+  "Deep Blue": {
+    "hex": "#b46818",
+    "agreement": 0.13,
+    "samples": 45
+  },
+  "Noble Blue": {
+    "hex": "#4c70d4",
+    "agreement": 1,
+    "samples": 1
+  },
+  "Red Sky": {
+    "hex": "#d0b4bc",
+    "agreement": 0.33,
+    "samples": 3
+  },
+  "Afternoon Orange": {
+    "hex": "#7464a4",
+    "agreement": 1,
+    "samples": 1
+  },
+  "Deep Purple": {
+    "hex": "#f0f0f0",
+    "agreement": 0.33,
+    "samples": 3
+  },
+  "Gold": {
+    "hex": "#0ce4f0",
+    "agreement": 0.33,
+    "samples": 3
+  },
+  "Royal Blue": {
+    "hex": "#b8f030",
+    "agreement": 0.5,
+    "samples": 2
+  },
+  "Bright Yellow": {
+    "hex": "#e8b47c",
+    "agreement": 0.5,
+    "samples": 2
+  },
+  "Magenta": {
+    "hex": "#b8f430",
+    "agreement": 0.33,
+    "samples": 3
+  },
+  "Blood Red": {
+    "hex": "#b46818",
+    "agreement": 1,
+    "samples": 1
+  },
+  "Aqua Blue": {
+    "hex": "#f0f4f0",
+    "agreement": 1,
+    "samples": 1
+  },
+  "Rose Pink": {
+    "hex": "#f0306c",
+    "agreement": 1,
+    "samples": 1
+  },
+  "Supreme Purple": {
+    "hex": "#3838ec",
+    "agreement": 0.5,
+    "samples": 2
+  }
+}
