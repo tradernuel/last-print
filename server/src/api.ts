@@ -6,7 +6,7 @@ import { env } from "./config.ts";
 import type { DB } from "./db.ts";
 import { CATALOG, NAMES, PackError, duelToday, openPackFor, packsAllowed, packsOpened, playDuel, dayOf } from "./game.ts";
 import { errMsg, log } from "./log.ts";
-import { bus, currentListings, health } from "./workers.ts";
+import { bus, chogAura, currentListings, health } from "./workers.ts";
 
 const short = (id: string | null) => (id ? `${id.slice(0, 6)}…${id.slice(-4)}` : null);
 const isId = (s: unknown): s is Hex => typeof s === "string" && /^0x[0-9a-f]{64}$/.test(s);
@@ -148,6 +148,14 @@ export function startApi(db: DB) {
       if (path === "/odds") {
         const seeds = db.prepare("SELECT day, commitment, commit_tx, reveal_tx, CASE WHEN reveal_tx IS NOT NULL THEN seed END AS seed FROM seeds ORDER BY day DESC LIMIT 30").all();
         return send(res, 200, { odds: CONFIG.odds, printBook: process.env.PRINTBOOK_ADDRESS ?? null, seeds });
+      }
+      if (path === "/chog-aura") {
+        // $CHOG Collector set: Chogs whose current owner holds at least the $CHOG Aura threshold.
+        if (chogAura.threshold === null) return fail(res, 503, "DATA_LAG", "$CHOG balances are loading.");
+        const rows = db.prepare(`SELECT token_id, to_addr FROM events e WHERE (block, tx_index, log_index) = (
+          SELECT block, tx_index, log_index FROM events WHERE token_id = e.token_id ORDER BY block DESC, tx_index DESC, log_index DESC LIMIT 1)`).all() as { token_id: number; to_addr: string }[];
+        const ids = rows.filter((r) => (chogAura.holders.get(r.to_addr.toLowerCase()) ?? 0n) >= chogAura.threshold!).map((r) => r.token_id).sort((a, b) => a - b);
+        return send(res, 200, { thresholdChog: Number(chogAura.threshold / 10n ** 18n), tokenIds: ids, at: new Date(chogAura.at).toISOString() });
       }
       if (path === "/health") return send(res, 200, { health, writesEnabled: env.writesEnabled });
       if (path === "/stats") {

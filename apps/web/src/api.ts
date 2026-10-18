@@ -57,6 +57,8 @@ export const api = {
   wall: () => call<{ editions: Record<string, number> }>("/wall"),
   lastPrints: () => call<{ lastPrints: { tokenId: number; name: string; edition: number; cardId: string; player: string; saleTx: string; saleBlock: number; root: string; rootTx: string | null; rootBlock: number | null; recordTx: string | null; proof: string[] }[] }>("/last-prints"),
   odds: () => call<{ odds: { regularTierBp: Record<string, number>; albumHelperBp: number }; printBook: string | null; seeds: { day: number; commitment: string; commit_tx: string | null; reveal_tx: string | null; seed: string | null }[] }>("/odds"),
+  chogAura: () => call<{ thresholdChog: number; tokenIds: number[]; at: string }>("/chog-aura"),
+  stats: () => call<{ stats: Record<string, number | string | null> }>("/stats"),
   health: () => call<{ health: Record<string, unknown>; writesEnabled: boolean }>("/health"),
 };
 

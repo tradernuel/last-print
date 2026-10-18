@@ -41,16 +41,19 @@ export function chogState(db: DB, tokenId: number, nowMs: number, listed: boolea
   };
 }
 
-/** Foils from real state at pull time. $CHOG Aura is added once its threshold is frozen from real balances (A7). */
+/** $CHOG balances of current owners, refreshed by the chogBalances worker (null until the first read finishes). */
+export const auraSource: { get: () => { threshold: bigint | null; holders: Map<string, bigint> } } = { get: () => ({ threshold: null, holders: new Map() }) };
+
+/** Foils from real state at pull time, including $CHOG Aura from the owner's real $CHOG balance. */
 export function foilsFor(db: DB, tokenId: number, nowMs: number, listed: boolean): Foil[] {
   const s = chogState(db, tokenId, nowMs, listed);
   const isLegend = CATALOG.find((c) => c.tokenId === tokenId)!.tier === "Legendary";
   const t = CONFIG.foils;
-  const foils = computeFoils(
-    { ...s, minter: s.minter, owner: s.owner, ownerChogBalance: 0n, isLegend },
-    { longHoldDays: t.longHoldDays, freshHours: t.freshHours, chogAuraMinBalance: 2n ** 255n },
+  const aura = auraSource.get();
+  return computeFoils(
+    { ...s, minter: s.minter, owner: s.owner, ownerChogBalance: aura.holders.get(s.owner.toLowerCase()) ?? 0n, isLegend },
+    { longHoldDays: t.longHoldDays, freshHours: t.freshHours, chogAuraMinBalance: aura.threshold ?? 2n ** 255n },
   );
-  return foils;
 }
 
 /** Hot cap: 75th percentile of listing-buy prices in the last 14 days (spec §6.6), from our own sale records. */

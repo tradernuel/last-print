@@ -5,7 +5,8 @@ import { env } from "./config.ts";
 import { getKv, openDb } from "./db.ts";
 import { importHistory } from "./history.ts";
 import { startApi } from "./api.ts";
-import { startDaily, startListings, startProver, startRecorder, startTail } from "./workers.ts";
+import { chogAura, startChogBalances, startDaily, startListings, startProver, startRecorder, startTail } from "./workers.ts";
+import { auraSource } from "./game.ts";
 import { log } from "./log.ts";
 
 mkdirSync(dirname(env.dbPath), { recursive: true });
@@ -16,6 +17,8 @@ const wallet = privateKeyToAccount(env.privateKey()).address;
 log.info("starting", { wallet, writes: env.writesEnabled, printBook: process.env.PRINTBOOK_ADDRESS ?? "not deployed yet" });
 startApi(db);
 startListings();
+auraSource.get = () => chogAura;
+startChogBalances(db);
 if (process.env.PRINTBOOK_ADDRESS) {
   startDaily(db);
   startProver(db);

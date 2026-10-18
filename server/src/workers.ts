@@ -150,6 +150,35 @@ export function startDaily(db: DB) {
   });
 }
 
+// ---------- $CHOG balances of Chog owners (spec §6.4 $CHOG Aura, check A7) ----------
+export const chogAura = { threshold: null as bigint | null, holders: new Map<string, bigint>(), at: 0 };
+const erc20 = [{ type: "function", name: "balanceOf", stateMutability: "view", inputs: [{ name: "a", type: "address" }], outputs: [{ type: "uint256" }] }] as const;
+
+export function startChogBalances(db: DB) {
+  loop("chogBalances", 6 * 3600_000, async () => {
+    const owners = (db.prepare(`SELECT to_addr FROM events e WHERE (block, tx_index, log_index) = (
+      SELECT block, tx_index, log_index FROM events WHERE token_id = e.token_id ORDER BY block DESC, tx_index DESC, log_index DESC LIMIT 1)`).all() as { to_addr: string }[])
+      .map((r) => r.to_addr.toLowerCase());
+    const unique = [...new Set(owners)];
+    const balances = new Map<string, bigint>();
+    for (let i = 0; i < unique.length; i += 40) {
+      const chunk = unique.slice(i, i + 40);
+      const got = await Promise.all(chunk.map((a) => publicClient.readContract({ address: CONFIG.chogToken, abi: erc20, functionName: "balanceOf", args: [a as Hex] })));
+      chunk.forEach((a, k) => balances.set(a, got[k]!));
+      await sleep(300);
+    }
+    const holders = [...balances.values()].filter((b) => b > 0n).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    // Threshold: the 85th percentile of all owners' balances (at least 1 wei), so roughly the top 15% qualify.
+    const all = [...balances.values()].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+    const p85 = all[Math.floor(0.85 * (all.length - 1))] ?? 0n;
+    chogAura.threshold = p85 > 0n ? p85 : 1n;
+    chogAura.holders = balances;
+    chogAura.at = Date.now();
+    const qualifying = all.filter((b) => b >= chogAura.threshold!).length;
+    health.chogAura = { owners: unique.length, holdingChog: holders.length, qualifying, thresholdWei: chogAura.threshold.toString(), at: new Date().toISOString() };
+  });
+}
+
 // ---------- OpenSea listings (Hot slot and For Sale foil) ----------
 let listings: Listing[] | null = null;
 let listingsAt = 0;

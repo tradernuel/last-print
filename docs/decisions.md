@@ -34,7 +34,7 @@ Choices made where the build spec was silent or had to change. Each keeps the pr
 
 **D16. The server makes its own wallet.** The key is generated on the server and stored only in its `.env` (mode 600). It never passes through chat, GitHub or a laptop.
 
-**D17. $CHOG Aura waits for A7.** Pulls don't get the $CHOG Aura foil until its threshold is frozen from real balances; every other foil is live.
+**D17. $CHOG Aura from live balances.** Every 6 hours the server reads the $CHOG balance of every current Chog owner from Monad and sets the Aura threshold at the 85th percentile, so roughly the top 15% of owners qualify (A7). A pull whose Chog's owner is at or above it gets the $CHOG Aura foil; the same list is the $CHOG Collector album set.
 
 **D18. Self-sale check, first version.** A sale where buyer and seller are the same wallet closes the edition without a crown. The funding-link and signed-in-player checks (D4) come with wallet sign-in.
 

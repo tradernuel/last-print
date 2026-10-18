@@ -11,7 +11,9 @@ export function Album() {
   const meta = useData<Meta>("meta.json");
   const [cards, setCards] = useState<OwnedCard[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [aura, setAura] = useState<{ thresholdChog: number; tokenIds: number[] } | null>(null);
   useEffect(() => { api.collection().then((c) => setCards(c.cards), (e: Error) => setErr(e.message)); }, []);
+  useEffect(() => { api.chogAura().then(setAura, () => setAura(null)); }, []);
 
   const owned = useMemo(() => new Set((cards ?? []).map((c) => c.tokenId)), [cards]);
   const countries = useMemo(() => {
@@ -56,6 +58,9 @@ export function Album() {
           </li>
         ))}
       </ul>
+
+      <h2>$CHOG Collector{aura ? `: ${aura.tokenIds.filter((id) => owned.has(id)).length} of ${aura.tokenIds.length}` : ""}</h2>
+      <p className="muted">{aura ? <>Chogs whose owners hold at least {aura.thresholdChog.toLocaleString("en-US")} $CHOG right now. Pull one and it carries the purple $CHOG Aura foil. The set changes as owners buy and sell $CHOG.</> : "Reading owners' $CHOG balances from Monad…"}</p>
 
       <h2>Sets</h2>
       <ul className="sets">
