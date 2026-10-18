@@ -1,16 +1,6 @@
 import { Link } from "react-router-dom";
 import { fmtDate, useData, type Meta } from "../data";
 
-export function Pack() {
-  return (
-    <section className="section narrow">
-      <h1>Today's pack</h1>
-      <p className="lede">Packs open when the game goes live. Each day you'll get a free pack of five real Chogs, one of them listed for sale right now.</p>
-      <p>Every pack is drawn from a seed that's locked on Monad before any pack opens, so nobody, including us, can choose what you get. Until then, <Link to="/wall">watch real sales print new editions</Link>.</p>
-    </section>
-  );
-}
-
 export function About() {
   const meta = useData<Meta>("meta.json");
   return (
