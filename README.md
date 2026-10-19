@@ -4,7 +4,7 @@ Every card is a real Chog. When the real Chog sells on Monad, its card prints a 
 
 A free daily card game built on the 1,969 Chog Genesis NFTs on Monad. Card stats come from each Chog's real life on chain, foils come from its real state at the moment you pull it, and editions are printed by its real sales. The market writes the rarity; nobody at Last Print decides it.
 
-**Play:** {{APP_URL}} · **Game server:** https://last-print-server.onrender.com/api/health · **Contract:** [PrintBook on Monadscan](https://monadscan.com/address/0x72a879f83e7f759743f5970ed4097fc4401476ec)
+**Play:** https://last-print-om8f-ruddy.vercel.app · **Game server:** https://last-print-server.onrender.com/api/health · **Contract:** [PrintBook on Monadscan](https://monadscan.com/address/0x72a879f83e7f759743f5970ed4097fc4401476ec)
 
 ## For judges: three minutes, no wallet
 

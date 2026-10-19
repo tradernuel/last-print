@@ -1,6 +1,6 @@
 # Submission form texts
 
-Fill `{{APP_URL}}`, `0x72a879f83e7f759743f5970ed4097fc4401476ec`, `{{VIDEO_URL}}` and the `{{…}}` usage numbers (from https://last-print-server.onrender.com/api/stats on the day you submit). Use real numbers only.
+Still to fill: `{{VIDEO_URL}}` and the `{{…}}` usage numbers (take them from https://last-print-server.onrender.com/api/stats on the day you submit). Use real numbers only.
 
 ---
 
@@ -45,7 +45,7 @@ The $CHOG Aura foil comes from the Chog owner's real $CHOG balance: every few ho
 
 ## Links
 
-- App: {{APP_URL}}
+- App: https://last-print-om8f-ruddy.vercel.app
 - Demo video: {{VIDEO_URL}}
 - Repository: https://github.com/tradernuel/last-print
 - Contract (PrintBook): https://monadscan.com/address/0x72a879f83e7f759743f5970ed4097fc4401476ec
@@ -53,7 +53,7 @@ The $CHOG Aura foil comes from the Chog owner's real $CHOG balance: every few ho
 
 ## Judge access instructions
 
-No wallet, no Chog and no sign-up needed. Open {{APP_URL}} in any browser.
+No wallet, no Chog and no sign-up needed. Open https://last-print-om8f-ruddy.vercel.app in any browser.
 
 1. Home: the card replays the latest real Chog sales (labelled Replay). The list below shows real sales live, each linked to Monadscan.
 2. Pack → Open today's pack: five real Chogs, including a Hot card listed for sale right now. One free pack per day per browser.

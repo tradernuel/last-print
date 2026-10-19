@@ -1,5 +1,7 @@
 # Judge guide
 
+**App:** https://last-print-om8f-ruddy.vercel.app
+
 No wallet, no Chog, no sign-up. Your browser gets a guest id automatically.
 
 ## The three-minute path
