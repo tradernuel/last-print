@@ -1,6 +1,6 @@
 # Submission form texts
 
-Fill `{{APP_URL}}`, `{{PRINTBOOK_ADDRESS}}`, `{{VIDEO_URL}}` and the `{{…}}` usage numbers (from https://last-print-server.onrender.com/api/stats on the day you submit). Use real numbers only.
+Fill `{{APP_URL}}`, `0x72a879f83e7f759743f5970ed4097fc4401476ec`, `{{VIDEO_URL}}` and the `{{…}}` usage numbers (from https://last-print-server.onrender.com/api/stats on the day you submit). Use real numbers only.
 
 ---
 
@@ -48,7 +48,7 @@ The $CHOG Aura foil comes from the Chog owner's real $CHOG balance: every few ho
 - App: {{APP_URL}}
 - Demo video: {{VIDEO_URL}}
 - Repository: https://github.com/tradernuel/last-print
-- Contract (PrintBook): https://monadscan.com/address/{{PRINTBOOK_ADDRESS}}
+- Contract (PrintBook): https://monadscan.com/address/0x72a879f83e7f759743f5970ed4097fc4401476ec
 - Server status: https://last-print-server.onrender.com/api/health
 
 ## Judge access instructions

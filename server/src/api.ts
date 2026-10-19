@@ -147,7 +147,8 @@ export function startApi(db: DB) {
       }
       if (path === "/odds") {
         const seeds = db.prepare("SELECT day, commitment, commit_tx, reveal_tx, CASE WHEN reveal_tx IS NOT NULL THEN seed END AS seed FROM seeds ORDER BY day DESC LIMIT 30").all();
-        return send(res, 200, { odds: CONFIG.odds, printBook: process.env.PRINTBOOK_ADDRESS ?? null, seeds });
+        const { _note, ...odds } = CONFIG.odds as typeof CONFIG.odds & { _note?: string };
+        return send(res, 200, { odds, printBook: process.env.PRINTBOOK_ADDRESS ?? null, seeds });
       }
       if (path === "/chog-aura") {
         // $CHOG Collector set: Chogs whose current owner holds at least the $CHOG Aura threshold.

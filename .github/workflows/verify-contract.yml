@@ -1,0 +1,29 @@
+name: verify-contract
+on: workflow_dispatch
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      ADDRESS: "0x72a879f83e7f759743f5970ed4097fc4401476ec"
+      OWNER: "0x7d9817a3F534B8ed283D81c44656bb5eaf874EB8"
+      MONADSCAN_API_KEY: ${{ secrets.MONADSCAN_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: foundry-rs/foundry-toolchain@v1
+      - name: Build
+        run: cd contracts && forge build
+      - name: Verify on Sourcify
+        run: |
+          cd contracts
+          forge verify-contract "$ADDRESS" src/PrintBook.sol:PrintBook --chain 143 --verifier sourcify \
+            --constructor-args "$(cast abi-encode 'constructor(address)' "$OWNER")" --watch
+      - name: Verify on Monadscan (only if a MONADSCAN_API_KEY secret is set)
+        if: ${{ env.MONADSCAN_API_KEY != '' }}
+        run: |
+          cd contracts
+          forge verify-contract "$ADDRESS" src/PrintBook.sol:PrintBook --chain 143 --verifier etherscan \
+            --verifier-url "https://api.etherscan.io/v2/api?chainid=143" --etherscan-api-key "$MONADSCAN_API_KEY" \
+            --constructor-args "$(cast abi-encode 'constructor(address)' "$OWNER")" --watch
